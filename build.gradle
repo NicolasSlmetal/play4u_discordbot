@@ -6,6 +6,8 @@ group 'org.example'
 version '1.0-SNAPSHOT'
 compileJava.options.encoding("UTF-8")
 compileTestJava.options.encoding("UTF-8")
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
 repositories {
     mavenCentral()
     maven{
@@ -15,7 +17,6 @@ repositories {
         name ('m2-dv8tion')
         url('https://m2.dv8tion.net/releases')
     }
-
 }
 
 dependencies {

@@ -15,7 +15,7 @@ public class FileManager {
     public FileManager(){
         this.dir = new File(System.getProperty("user.dir") + "\\audiofiles");
         for (File f : this.dir.listFiles()){
-            this.musics.add(f.getName().replace("_", "\s"));
+            this.musics.add(f.getName().replace("_", " "));
         }
         String[] s = {"!", "(", ")", "?", "<", ">", "´", "'", "\"",
         "&", "_", "/", "[", "]"};
@@ -30,7 +30,7 @@ public class FileManager {
             if (!s.equals("_") && !s.equals("'") & !s.equals("/")) {
                 name = name.replace(s, "");
             }else{
-                name = name.replace(s, "\s");
+                name = name.replace(s, " ");
             }
         }
         return name;
@@ -40,7 +40,7 @@ public class FileManager {
             if (!s.equals("_") && !s.equals("/") && !s.equals("'")) {
                 name = name.replace(s, "");
             }else{
-                name = name.replace(s, "\s");
+                name = name.replace(s, " ");
             }
         }
         String replicant = name.replace("." + ext, "");
@@ -101,7 +101,7 @@ public class FileManager {
         boolean found = false;
         char[] alpha =  {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
                 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' '};
-        String[] search = name.split("\s");
+        String[] search = name.split(" ");
         for (int c =0;c< search.length;c++) {
             String actual = search[c];
             final String copyActual = actual;
@@ -115,7 +115,7 @@ public class FileManager {
                         char[] copy = array.clone();
                         copy[i] = caracter;
                         String one = new String(copy);
-                        final String end = one.replaceAll("\s", "");
+                        final String end = one.replaceAll(" ", "");
                         searchs = this.getMusics().stream()
                                 .filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(end)).collect(Collectors.toList());
                         if (!searchs.isEmpty()) {
@@ -146,7 +146,7 @@ public class FileManager {
                                     for (char e : copy) {
                                         one += String.valueOf(e);
                                     }
-                                    final String end = one.replaceAll("\s", "");
+                                    final String end = one.replaceAll(" ", "");
                                     searchs = this.getMusics().stream().filter(m ->
                                             m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(end)).collect(Collectors.toList());
                                     if (!searchs.isEmpty()) {
@@ -178,7 +178,7 @@ public class FileManager {
                                             copy[i2] = other;
                                         }
                                         String one = new String(copy);
-                                        final String end = one.replaceAll("\s", "");
+                                        final String end = one.replaceAll(" ", "");
                                         searchs = this.getMusics().stream().filter(m ->
                                                 m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(end)).collect(Collectors.toList());
                                         if (!searchs.isEmpty()) {
@@ -194,7 +194,7 @@ public class FileManager {
                     }
                 }
             }
-        search = name.split("\s");
+        search = name.split(" ");
         for (int c = 0; c< search.length; c++){
             final String end = search[c];
             searchs = searchs.stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(end)).collect(Collectors.toList());
@@ -205,10 +205,10 @@ public class FileManager {
         this.setMusics();
         final String file_name = name;
         List<String> searchs = this.getMusics().stream()
-                .filter(m -> m.substring(0, m.lastIndexOf(".")).replaceAll("-", "\s")
+                .filter(m -> m.substring(0, m.lastIndexOf(".")).replaceAll("-", " ")
                         .toUpperCase().contains(file_name)).collect(Collectors.toList());
        if (searchs.isEmpty()){
-           final String[] split = name.split("\s");
+           final String[] split = name.split(" ");
            int c = 0;
            while (searchs.isEmpty() && c < split.length){
                final int e = c;
@@ -239,7 +239,7 @@ public class FileManager {
         searchs = this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(correspondency))
                 .collect(Collectors.toList());
         if (searchs.isEmpty()){
-            final String[] split = correspondency.split("\s");
+            final String[] split = correspondency.split(" ");
             int c = 0;
             while (searchs.isEmpty() && c < split.length){
                 final int e = c;
@@ -270,7 +270,7 @@ public class FileManager {
 
     public void setMusics() {
         for (File f : this.dir.listFiles()) {
-            this.musics.add(f.getName().replace("_", "\s"));
+            this.musics.add(f.getName().replace("_", " "));
         }
     }
 

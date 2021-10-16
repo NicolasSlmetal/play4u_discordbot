@@ -23,7 +23,7 @@ public class CommandChecker {
         }
     }
     public void loadCommand(String name, MessageReceivedEvent event, String user){
-        String[] splitMsg = name.replaceFirst(MessageReader.getPrefix(), "").trim().split("\s");
+        String[] splitMsg = name.replaceFirst(MessageReader.getPrefix(), "").trim().split(" ");
         for (String key : this.getCmdMap().keySet()){
             if (splitMsg[0].replaceFirst(MessageReader.getPrefix(), "").trim().equals(key)){
                 try{

@@ -1,0 +1,1 @@
+worker: java -jar build/libs/worker-all.jar

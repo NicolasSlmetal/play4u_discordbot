@@ -101,9 +101,9 @@ public class CmdPlay implements CommandAction{
                 .setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
                 .setTitle("Play")
                 .setDescription("Reproduz ou retoma a reprodução de uma música. É necessário estar " +
-                        "em um canal de voz para ser executado.\s Além disso, precisa da música como parâmetro. " +
+                        "em um canal de voz para ser executado. Além disso, precisa da música como parâmetro. " +
                         "A música pode ser passada com o nome, arquivo (mp3, m4a, opus, wav, etc) ou URLs do " +
-                        "https://vimeo.com/watch e https://bandcamp.com/\s. Se uma música estiver tocando, adiciona a música declara a playlist. Se uma " +
+                        "https://vimeo.com/watch e https://bandcamp.com/. Se uma música estiver tocando, adiciona a música declara a playlist. Se uma " +
                         "música estiver em pause, resume ela")
                 .addField("Sintaxe", BotConstants.PLAY_SYNTAX.getConstants(), true)
                         .setColor(new Color(0x04D7D7));

@@ -60,9 +60,9 @@ public class FileManager {
         replicant = replicant.replaceAll("OFFICIAL", "");
         replicant = replicant.replaceAll("Official", "");
         replicant = replicant.replaceAll("official", "");
-        replicant = replicant.replaceAll("V[I-Í]DEO", "");
-        replicant = replicant.replaceAll("V[i-í]deo", "");
-        replicant = replicant.replaceAll("v[i-í]deo", "");
+        replicant = replicant.replaceAll("VIDEO", "");
+        replicant = replicant.replaceAll("Video", "");
+        replicant = replicant.replaceAll("video", "");
         replicant = replicant.replaceAll("[T-t]radução", "");
         replicant = replicant.replaceAll("TRADUÇÃO", "");
         name = replicant.trim() + "." + ext;

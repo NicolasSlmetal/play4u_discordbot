@@ -10,6 +10,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CmdBank implements CommandAction{
@@ -33,7 +34,7 @@ public class CmdBank implements CommandAction{
         this.setMusics();
         if (cmd.isEmpty()){
             title = "Todas as músicas do banco";
-            List<String> sorted_musics = this.getMusics().stream().sorted().toList();
+            List<String> sorted_musics = this.getMusics().stream().sorted().collect(Collectors.toCollection(ArrayList::new));
             for (int c = 0;c< sorted_musics.size();c++){
                 description += (c + 1) +"º -" + sorted_musics.get(c) + "\n";
             }
@@ -42,7 +43,7 @@ public class CmdBank implements CommandAction{
             List<String> musics = new FileManager().searchFiles(cmd);
             if (cmd.length() == 1){
                 Stream<String> stream = musics.stream().filter(m -> m.toUpperCase().startsWith(cmd));
-                musics = stream.toList();
+                musics = stream.collect(Collectors.toCollection(ArrayList::new));
             }
             for (int c =0; c< musics.size();c++){
                 description += (c + 1) +"º -"+ musics.get(c) + "\n";

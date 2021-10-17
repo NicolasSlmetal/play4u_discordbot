@@ -92,7 +92,7 @@ public class MainPlayer extends AudioSource{
                 String title = MainPlayer.isPlaying()?"Adicionado na fila":"Tocando";
                 main.getTrackQueue().queuePlaylist(track);
                 EmbedBuilder embed;
-                if (!track.getInfo().title.equals("Unknown Title")){
+                if (!track.getInfo().title.equalsIgnoreCase("Unknown Title")){
                     MainPlayer.setName_music(track.getInfo().title);
                 }
                 if (!MainPlayer.isPlaying()) {

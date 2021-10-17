@@ -110,8 +110,9 @@ public class FileManager {
         for (int c =0;c< search.length;c++) {
             String actual = search[c];
             final String copyActual = actual;
-            if (this.getMusics().stream().filter(m -> m
-                    .substring(0, m.lastIndexOf(".")).toUpperCase().contains(copyActual)).toList().isEmpty()) {
+            Stream<String> corrects = this.getMusics().stream().filter(m -> m
+                    .substring(0, m.lastIndexOf(".")).toUpperCase().contains(copyActual));
+            if (corrects.findAny().isEmpty()) {
                 for (char caracter : alpha) {
                     char[] array = actual.toCharArray();
                     int i = 0;
@@ -120,8 +121,9 @@ public class FileManager {
                         copy[i] = caracter;
                         String one = new String(copy);
                         final String end = one.replaceAll(" ", "");
-                        searchs = this.getMusics().stream()
-                                .filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(end)).collect(Collectors.toList());
+                        Stream<String> stream = this.getMusics().stream()
+                                .filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(end));
+                        searchs.addAll(stream.collect(Collectors.toCollection(ArrayList::new)));
                         if (!searchs.isEmpty()) {
                             name = name.replaceAll(actual, end);
                             found = true;
@@ -135,7 +137,8 @@ public class FileManager {
                 for (int c = 0; c< search.length;c++){
                     String actual = search[c];
                     final String annotherCopy = actual;
-                    if (this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(annotherCopy)).collect(Collectors.toList()).isEmpty()) {
+                    Stream<String> corrects =this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(annotherCopy));
+                    if (corrects.findAny().isEmpty()) {
                         if (actual.length() > 3) {
                             for (char caracter : alpha) {
                                 ArrayList<Character> chars = new ArrayList<>();
@@ -153,7 +156,7 @@ public class FileManager {
                                     final String end = one.replaceAll(" ", "");
                                     Stream<String> stream = this.getMusics().stream().filter(m ->
                                             m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(end));
-                                    searchs = stream.toList();
+                                    searchs = stream.collect(Collectors.toCollection(ArrayList::new));
                                     if (!searchs.isEmpty()) {
                                         name = name.replaceAll(actual, end);
                                         found = true;
@@ -169,7 +172,8 @@ public class FileManager {
                 for (int c = 0; c < search.length; c++) {
                     String actual = search[c];
                     final String copyActual = actual;
-                    if (this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(copyActual)).collect(Collectors.toList()).isEmpty()) {
+                    Stream<String> corrects = this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(copyActual));
+                    if (corrects.findAny().isEmpty()) {
                         for (char caracter : alpha) {
                             for (char other : alpha) {
                                 char[] array = actual.toCharArray();
@@ -185,7 +189,7 @@ public class FileManager {
                                         String one = new String(copy);
                                         final String end = one.replaceAll(" ", "");
                                         Stream<String> stream = this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(end));
-                                        searchs = stream.toList();
+                                        searchs = stream.collect(Collectors.toCollection(ArrayList::new));
                                         if (!searchs.isEmpty()) {
                                             name = name.replaceAll(actual, end);
                                             found = true;
@@ -203,7 +207,7 @@ public class FileManager {
         for (int c = 0; c< search.length; c++){
             final String end = search[c];
             Stream<String> stream = searchs.stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(end));
-            searchs = stream.toList();
+            searchs = stream.collect(Collectors.toCollection(ArrayList::new));
         }
         return searchs;
     }
@@ -211,21 +215,21 @@ public class FileManager {
         this.setMusics();
         final String file_name = name;
         Stream<String> stream = this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).replaceAll("-", " ").toUpperCase().contains(file_name));
-        List<String> searchs = stream.toList();
+        List<String> searchs = stream.collect(Collectors.toCollection(ArrayList::new));
        if (searchs.isEmpty()){
            final String[] split = name.split(" ");
            int c = 0;
            while (searchs.isEmpty() && c < split.length){
                final int e = c;
                stream = this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(split[e]));
-               searchs = stream.toList();
+               searchs = stream.collect(Collectors.toCollection(ArrayList::new));
                c++;
            }
            for (c = 0;c < split.length;c++){
                final int e = c;
                stream = searchs.stream().filter(m ->
                        m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(split[e]));
-               searchs = stream.toList();
+               searchs = stream.collect(Collectors.toCollection(ArrayList::new));
            }
        }
        if (searchs.isEmpty()){
@@ -243,7 +247,7 @@ public class FileManager {
         this.setMusics();
         List<String> searchs;
         Stream<String> stream = this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(correspondency));
-        searchs = stream.toList();
+        searchs = stream.collect(Collectors.toCollection(ArrayList::new));
         if (searchs.isEmpty()){
             final String[] split = correspondency.split(" ");
             int c = 0;
@@ -251,13 +255,13 @@ public class FileManager {
                 final int e = c;
                 stream =this.getMusics().stream().filter(
                         m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(split[e]));
-                searchs = stream.toList();
+                searchs = stream.collect(Collectors.toCollection(ArrayList::new));
                 c++;
             }
             for (c=0;c < split.length;c++){
                 final int e = c;
                 stream = searchs.stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(split[e]));
-                searchs = stream.toList();
+                searchs = stream.collect(Collectors.toCollection(ArrayList::new));
             }
         }
         return searchs.stream().sorted().collect(Collectors.toList());

@@ -6,7 +6,9 @@ group 'org.example'
 version '1.0-SNAPSHOT'
 compileJava.options.encoding("UTF-8")
 compileTestJava.options.encoding("UTF-8")
-task stage(dependsOn: ['build', 'clean'])
+task stage(dependsOn: ['build', 'clean', 'shawdorJar', 'test'])
+build.mustRunAfter clean
+build.mustRunAfter test
 gradle.taskGraph.whenReady {
     taskGraph ->
         if (taskGraph.hasTask(stage)) {
@@ -38,4 +40,9 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+jar{
+    manifest{
+        attributes 'Class-Path': '/libs/play4ubot-1.0-SNAPSHOT.jar', 'Main-Class': 'Main.java'
+    }
 }

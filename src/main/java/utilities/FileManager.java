@@ -14,7 +14,7 @@ public class FileManager {
     private File dir;
     private List<String> symbols;
     public FileManager(){
-        this.dir = new File(System.getProperty("user.dir") + "\\audiofiles");
+        this.dir = new File(System.getProperty("user.dir") + "\\src\\main\\java\\audiofiles");
         for (File f : this.dir.listFiles()){
             this.musics.add(f.getName().replace("_", " "));
         }

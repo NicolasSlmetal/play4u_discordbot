@@ -7,7 +7,6 @@ version '1.0-SNAPSHOT'
 compileJava.options.encoding("UTF-8")
 compileTestJava.options.encoding("UTF-8")
 task stage(dependsOn: ['build', 'clean'])
-build.mustRunAfter clean
 repositories {
     mavenCentral()
     maven{

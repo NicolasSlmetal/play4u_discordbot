@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: /libs/play4ubot-1.0-SNAPSHOT-all.jar
+Main-Class: Main
+

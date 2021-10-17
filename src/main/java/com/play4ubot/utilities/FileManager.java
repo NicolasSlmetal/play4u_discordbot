@@ -13,7 +13,7 @@ public class FileManager {
     private File dir;
     private String[] symbols;
     public FileManager(){
-        this.dir = new File(System.getProperty("user.dir") + "\\audiofiles");
+        this.dir = new File(System.getProperty("user.dir") + "com.play4ubot\\audiofiles");
         try {
             for (File f : this.dir.listFiles()) {
                 this.musics.add(f.getName().replace("_", " "));
@@ -82,7 +82,7 @@ public class FileManager {
             name = this.removeSymbols(name, attachment.getFileExtension());
             if (this.getMusics().add(name)) {
                 this.getMusics().remove(name);
-                attachment.downloadToFile(this.getDir().getAbsolutePath() + "\\" + name
+                attachment.downloadToFile(this.getDir().getAbsolutePath() + "/" + name
                                 .replaceAll(attachment.getFileExtension().toUpperCase(), ""))
                         .exceptionally(e -> {
                             e.printStackTrace();

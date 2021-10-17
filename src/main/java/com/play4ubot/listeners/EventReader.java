@@ -1,4 +1,4 @@
-package listeners;
+package com.play4ubot.listeners;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -39,6 +39,7 @@ public class EventReader extends ListenerAdapter {
                 File dir = new File(System.getProperty("user.dir") + "\\src\\main\\java\\audiofiles");
                 try {
                     boolean created = dir.mkdir();
+                    System.out.println(created?"Diretório criado":"Diretório não criado");
                 } catch (Exception e){
                     e.fillInStackTrace();
                 }

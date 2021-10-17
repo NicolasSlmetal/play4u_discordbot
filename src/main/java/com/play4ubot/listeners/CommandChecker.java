@@ -1,7 +1,7 @@
-package listeners;
+package com.play4ubot.listeners;
 
 import java.util.HashMap;
-import commands.*;
+import com.play4ubot.commands.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class CommandChecker {

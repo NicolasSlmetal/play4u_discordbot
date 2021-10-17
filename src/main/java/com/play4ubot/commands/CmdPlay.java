@@ -1,14 +1,14 @@
-package commands;
+package com.play4ubot.commands;
 
-import audiopackage.MainPlayer;
-import listeners.MessageReader;
+import com.play4ubot.audiopackage.MainPlayer;
+import com.play4ubot.listeners.MessageReader;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
-import utilities.BotConstants;
-import utilities.FileManager;
-import utilities.URLFinder;
+import com.play4ubot.utilities.BotConstants;
+import com.play4ubot.utilities.FileManager;
+import com.play4ubot.utilities.URLFinder;
 
 import java.awt.*;
 

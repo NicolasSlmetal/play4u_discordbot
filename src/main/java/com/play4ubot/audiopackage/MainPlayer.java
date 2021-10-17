@@ -1,4 +1,4 @@
-package audiopackage;
+package com.play4ubot.audiopackage;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;

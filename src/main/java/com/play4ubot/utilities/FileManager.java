@@ -158,7 +158,7 @@ public class FileManager {
                                     }
                                     final String end = one.replaceAll(" ", "");
                                     Stream<String> stream = this.getMusics().stream().filter(m ->
-                                            m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(end));
+                                            m.toUpperCase().contains(end));
                                     searchs = stream.collect(Collectors.toCollection(ArrayList::new));
                                     if (!searchs.isEmpty()) {
                                         name = name.replaceAll(actual, end);

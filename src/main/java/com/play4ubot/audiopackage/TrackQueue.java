@@ -5,7 +5,6 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEvent;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -23,7 +22,6 @@ public class TrackQueue extends AudioSource{
     public void nextTrack() {
         this.player.startTrack(this.getPlaylist().poll(), false);
         if (MainPlayer.isLoop() && this.getPlaylist().isEmpty()){
-            tracks.forEach(t -> System.out.println(t.getInfo().title));
             this.getPlaylist().addAll(tracks);
             tracks.clear();
         }

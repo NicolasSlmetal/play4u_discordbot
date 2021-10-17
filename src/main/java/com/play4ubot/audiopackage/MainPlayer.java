@@ -172,12 +172,11 @@ public class MainPlayer extends AudioSource{
         String name_skiped = MainPlayer.getITEM().musicMapManagers.get(id).getPlayer().getPlayingTrack().getInfo().title;
         MainPlayer.getITEM().musicMapManagers.get(id).getTrackQueue().nextTrack();
         String name_actual;
-
         try {
             name_actual = MainPlayer.getITEM().musicMapManagers.get(id).getPlayer().getPlayingTrack().getInfo().title
             + "\nDuração: " + MainPlayer.getITEM().sendDuration(MainPlayer.getITEM().getMusicMapManagers()
                     .get(id).getPlayer().getPlayingTrack().getDuration());
-
+            MainPlayer.setPlaying(true);
         }catch (NullPointerException n){
             name_actual = "null";
             MainPlayer.paused = false;

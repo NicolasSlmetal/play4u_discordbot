@@ -8,10 +8,7 @@ import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
-import java.io.IOException;
-
 
 public class EventReader extends ListenerAdapter {
     private static boolean wait_prefix = false;

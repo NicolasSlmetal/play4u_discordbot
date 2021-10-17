@@ -1,3 +1,4 @@
 
-Class-Path: src\main\java\Main.class
+Manifest-Version: 1.0
+Created-By: Nicolas
 Main-Class: Main

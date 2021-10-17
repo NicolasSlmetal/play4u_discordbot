@@ -49,6 +49,7 @@ public class CmdPlay implements CommandAction{
             } else if (!finder.isUrl(music)) {
                 try {
                     music = this.manager.searchFile(this.manager.removeSymbols(music));
+                    System.out.println(music);
                     MainPlayer.setName_music(music);
                     if (music == null) {
                         event.getChannel().sendMessage("Não encontrei a música :cry:").queue();

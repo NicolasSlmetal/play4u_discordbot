@@ -9,6 +9,9 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
+
 
 public class EventReader extends ListenerAdapter {
     private static boolean wait_prefix = false;
@@ -33,6 +36,12 @@ public class EventReader extends ListenerAdapter {
                     System.out.printf("%s -> %s ", u.getUser().getName(), u.getId());
                 }
                 System.out.println("\n===========================");
+                File dir = new File(System.getProperty("user.dir") + "\\src\\main\\java\\audiofiles");
+                try {
+                    boolean created = dir.mkdir();
+                } catch (Exception e){
+                    e.fillInStackTrace();
+                }
             }
         }
 

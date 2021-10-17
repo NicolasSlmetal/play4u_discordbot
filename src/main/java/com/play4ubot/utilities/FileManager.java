@@ -3,7 +3,6 @@ package com.play4ubot.utilities;
 import com.play4ubot.audiopackage.MainPlayer;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import com.play4ubot.utilities.BotConstants;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,7 +13,7 @@ public class FileManager {
     private File dir;
     private String[] symbols;
     public FileManager(){
-        this.dir = new File(System.getProperty("user.dir") + "\\src\\main\\java\\audiofiles");
+        this.dir = new File(System.getProperty("user.dir") + "\\audiofiles");
         try {
             for (File f : this.dir.listFiles()) {
                 this.musics.add(f.getName().replace("_", " "));

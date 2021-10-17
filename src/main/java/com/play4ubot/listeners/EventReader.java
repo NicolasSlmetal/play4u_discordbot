@@ -36,7 +36,7 @@ public class EventReader extends ListenerAdapter {
                     System.out.printf("%s -> %s ", u.getUser().getName(), u.getId());
                 }
                 System.out.println("\n===========================");
-                File dir = new File(System.getProperty("user.dir") + "\\src\\main\\java\\audiofiles");
+                File dir = new File(System.getProperty("user.dir") + "\\audiofiles");
                 try {
                     boolean created = dir.mkdir();
                     System.out.println(created?"Diretório criado":"Diretório não criado");

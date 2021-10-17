@@ -10,14 +10,9 @@ import javax.security.auth.login.LoginException;
 
 
 public class Main {
-    private static  String token;
-    public static String getEnv(){
-        token = System.getenv("TOKEN");
-        return token;
-    }
     public static void main(String[] args){
         try {
-            JDA builder = JDABuilder.createDefault(getEnv())
+            JDA builder = JDABuilder.createDefault(System.getenv("TOKEN"))
                     .setActivity(Activity.playing("Irineu, você não sabe nem eu"))
                     .addEventListeners(new EventReader())
                     .addEventListeners(new MessageReader())

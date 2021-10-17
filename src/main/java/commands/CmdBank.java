@@ -46,7 +46,7 @@ public class CmdBank implements CommandAction{
                         .startsWith(cmd)).collect(Collectors.toList());
             }
             for (int c =0; c< musics.size();c++){
-                description +=   (c + 1) +"º -"+ musics.get(c) + "\n";
+                description += (c + 1) +"º -"+ musics.get(c) + "\n";
             }
         }
         if (!description.isEmpty()){

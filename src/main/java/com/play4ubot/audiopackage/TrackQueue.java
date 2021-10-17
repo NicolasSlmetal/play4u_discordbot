@@ -35,9 +35,6 @@ public class TrackQueue extends AudioSource{
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (MainPlayer.isLoop()){
-            TrackQueue.getTracks().add(track.makeClone());
-        }
         if (this.playlist.isEmpty() && !MainPlayer.isLoop()){
             MainPlayer.setPlaying(false);
         }
@@ -59,6 +56,9 @@ public class TrackQueue extends AudioSource{
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
+        if (MainPlayer.isLoop()){
+            TrackQueue.getTracks().add(track.makeClone());
+        }
         super.onTrackStart(player, track);
     }
 

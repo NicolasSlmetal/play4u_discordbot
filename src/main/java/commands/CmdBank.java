@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CmdBank implements CommandAction{
     private ArrayList<String> musics = new ArrayList<>();
@@ -41,7 +42,8 @@ public class CmdBank implements CommandAction{
             title = String.format("Todas as músicas com \"%s\"", cmd.toUpperCase());
             List<String> musics = new FileManager().searchFiles(cmd);
             if (cmd.length() == 1){
-                musics = musics.stream().filter(m -> m.toUpperCase().startsWith(cmd)).collect(Collectors.toList());
+                Stream<String> stream = musics.stream().filter(m -> m.toUpperCase().startsWith(cmd));
+                musics = stream.toList();
             }
             for (int c =0; c< musics.size();c++){
                 description += (c + 1) +"º -"+ musics.get(c) + "\n";

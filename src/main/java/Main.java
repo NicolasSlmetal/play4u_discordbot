@@ -10,7 +10,7 @@ import javax.security.auth.login.LoginException;
 
 
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) throws NullPointerException{
         try {
             JDA builder = JDABuilder.createDefault(System.getenv("TOKEN"))
                     .setActivity(Activity.playing("Irineu, você não sabe nem eu"))

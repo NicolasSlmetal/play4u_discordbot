@@ -1,3 +1,4 @@
 
-Class-Path: "src\main\java\Main.class"
+Manifest-Version: 1.0
+Class-Path: JDA-4.3.0_333-withDependencies-min.jar
 Main-Class: Main

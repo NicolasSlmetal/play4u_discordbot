@@ -13,7 +13,7 @@ public class FileManager {
     private File dir;
     private String[] symbols;
     public FileManager(){
-        this.dir = new File(System.getProperty("user.dir"));
+        this.dir = new File(System.getProperty("user.dir") + "\\audiofiles");
         try {
             for (File f : this.dir.listFiles()) {
                 this.musics.add(f.getName().replace("_", " "));

@@ -33,8 +33,7 @@ public class CmdBank implements CommandAction{
         this.setMusics();
         if (cmd.isEmpty()){
             title = "Todas as músicas do banco";
-            List<String> sorted_musics = this.getMusics().stream().sorted()
-                    .toList();
+            List<String> sorted_musics = this.getMusics().stream().sorted().toList();
             for (int c = 0;c< sorted_musics.size();c++){
                 description += (c + 1) +"º -" + sorted_musics.get(c) + "\n";
             }
@@ -42,8 +41,7 @@ public class CmdBank implements CommandAction{
             title = String.format("Todas as músicas com \"%s\"", cmd.toUpperCase());
             List<String> musics = new FileManager().searchFiles(cmd);
             if (cmd.length() == 1){
-                musics = musics.stream().filter(m -> m.toUpperCase()
-                        .startsWith(cmd)).collect(Collectors.toList());
+                musics = musics.stream().filter(m -> m.toUpperCase().startsWith(cmd)).collect(Collectors.toList());
             }
             for (int c =0; c< musics.size();c++){
                 description += (c + 1) +"º -"+ musics.get(c) + "\n";

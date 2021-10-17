@@ -23,7 +23,7 @@ public class FileManager {
     }
     public boolean verifyExtension(String ext){
         String[] valid = {"MP3", "M4A", "OPUS", "MP4", "AA3", "FLAC", "WAV"};
-        return Arrays.stream(valid).anyMatch(e -> e.equals(ext));
+        return Arrays.stream(valid).toList().contains(ext);
     }
     public String removeSymbols(String name){
         for (String s: this.getSymbols()){
@@ -106,8 +106,7 @@ public class FileManager {
             String actual = search[c];
             final String copyActual = actual;
             if (this.getMusics().stream().filter(m -> m
-                    .substring(0, m.lastIndexOf("."))
-                    .toUpperCase().contains(copyActual)).toList().isEmpty()) {
+                    .substring(0, m.lastIndexOf(".")).toUpperCase().contains(copyActual)).toList().isEmpty()) {
                 for (char caracter : alpha) {
                     char[] array = actual.toCharArray();
                     int i = 0;

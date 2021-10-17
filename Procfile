@@ -1,1 +1,1 @@
-worker: src/main/java/Main.java
+worker: java -jar build/libs/play4ubot-1.0-SNAPSHOT.JAR

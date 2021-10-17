@@ -18,6 +18,7 @@ public class FileManager {
             for (File f : this.dir.listFiles()) {
                 this.musics.add(f.getName().replace("_", " "));
             }
+            this.musics.remove("ignore");
         }catch (NullPointerException e){
             System.out.println("Não há arquivos");
         }

@@ -1,9 +1,9 @@
-package utilities;
+package com.play4ubot.utilities;
 
-import audiopackage.MainPlayer;
+import com.play4ubot.audiopackage.MainPlayer;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-
+import com.play4ubot.utilities.BotConstants;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,8 +15,12 @@ public class FileManager {
     private String[] symbols;
     public FileManager(){
         this.dir = new File(System.getProperty("user.dir") + "\\src\\main\\java\\audiofiles");
-        for (File f : this.dir.listFiles()){
-            this.musics.add(f.getName().replace("_", " "));
+        try {
+            for (File f : this.dir.listFiles()) {
+                this.musics.add(f.getName().replace("_", " "));
+            }
+        }catch (NullPointerException e){
+            System.out.println("Não há arquivos");
         }
         this.symbols = new String[]{"!", "(", ")", "?", "<", ">", "´", "'", "\"",
         "&", "_", "/", "[", "]"};
@@ -280,9 +284,14 @@ public class FileManager {
     }
 
     public void setMusics() {
-        for (File f : this.dir.listFiles()) {
-            this.musics.add(f.getName().replace("_", " "));
+        try {
+            for (File f : this.dir.listFiles()) {
+                this.musics.add(f.getName().replace("_", " "));
+            }
+        }catch (NullPointerException n){
+            n.fillInStackTrace();
         }
+
     }
 
     public File getDir() {

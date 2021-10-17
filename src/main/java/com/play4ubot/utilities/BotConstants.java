@@ -1,4 +1,4 @@
-package utilities;
+package com.play4ubot.utilities;
 
 public enum BotConstants {
     NOT_IN_VOICE_CHANNEL("Conecte-se a um canal de voz"),

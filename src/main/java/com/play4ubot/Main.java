@@ -1,7 +1,7 @@
 package com.play4ubot;
 
-import listeners.EventReader;
-import listeners.MessageReader;
+import com.play4ubot.listeners.EventReader;
+import com.play4ubot.listeners.MessageReader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;

@@ -1,4 +1,4 @@
-package utilities;
+package com.play4ubot.utilities;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;

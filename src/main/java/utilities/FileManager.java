@@ -112,7 +112,7 @@ public class FileManager {
             final String copyActual = actual;
             Stream<String> corrects = this.getMusics().stream().filter(m -> m
                     .substring(0, m.lastIndexOf(".")).toUpperCase().contains(copyActual));
-            if (corrects.findAny().isEmpty()) {
+            if (corrects.count() == 0) {
                 for (char caracter : alpha) {
                     char[] array = actual.toCharArray();
                     int i = 0;
@@ -138,7 +138,7 @@ public class FileManager {
                     String actual = search[c];
                     final String annotherCopy = actual;
                     Stream<String> corrects =this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(annotherCopy));
-                    if (corrects.findAny().isEmpty()) {
+                    if (corrects.count() == 0) {
                         if (actual.length() > 3) {
                             for (char caracter : alpha) {
                                 ArrayList<Character> chars = new ArrayList<>();
@@ -173,7 +173,7 @@ public class FileManager {
                     String actual = search[c];
                     final String copyActual = actual;
                     Stream<String> corrects = this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(copyActual));
-                    if (corrects.findAny().isEmpty()) {
+                    if (corrects.count() == 0) {
                         for (char caracter : alpha) {
                             for (char other : alpha) {
                                 char[] array = actual.toCharArray();

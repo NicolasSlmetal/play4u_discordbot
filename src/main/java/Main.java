@@ -22,6 +22,8 @@ public class Main {
                     .build();
         } catch (LoginException le){
             le.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
         }
     }
 }

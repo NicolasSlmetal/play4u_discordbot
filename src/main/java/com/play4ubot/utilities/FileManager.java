@@ -95,9 +95,9 @@ public class FileManager {
                 channel.sendMessage(user + ",**SUCESSO**, música **" + MainPlayer.getName_music() + "** adicionada ao banco de músicas").queue();
                 return name;
             } else {
-                MainPlayer.setName_music(this.getDir() + "\\" + name);
+                MainPlayer.setName_music(this.getDir() + "/" + name);
                 channel.sendMessage(user +",A música já estava no banco").queue();
-                return this.getDir() + "\\" + name;
+                return this.getDir() + "/" + name;
             }
         } else{
             throw new IllegalArgumentException(BotConstants.INVALID_FILE_FORMAT.getConstants());
@@ -240,7 +240,7 @@ public class FileManager {
        }
        Random n = new Random();
        if (!searchs.isEmpty()) {
-           return String.format("%s\\%s", this.getDir(), searchs.size() > 1 ? searchs.get(n.nextInt(searchs.size()
+           return String.format("%s/%s", this.getDir(), searchs.size() > 1 ? searchs.get(n.nextInt(searchs.size()
            )):searchs.get(0));
        }else {
            return null;

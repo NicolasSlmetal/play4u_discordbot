@@ -12,19 +12,23 @@ import java.util.stream.Stream;
 public class FileManager {
     private Set<String> musics = new HashSet<>();
     private File dir;
-    private List<String> symbols;
+    private String[] symbols;
     public FileManager(){
         this.dir = new File(System.getProperty("user.dir") + "\\src\\main\\java\\audiofiles");
         for (File f : this.dir.listFiles()){
             this.musics.add(f.getName().replace("_", " "));
         }
-        String[] s = {"!", "(", ")", "?", "<", ">", "´", "'", "\"",
+        this.symbols = new String[]{"!", "(", ")", "?", "<", ">", "´", "'", "\"",
         "&", "_", "/", "[", "]"};
-        this.symbols = Arrays.stream(s).toList();
     }
     public boolean verifyExtension(String ext){
         String[] valid = {"MP3", "M4A", "OPUS", "MP4", "AA3", "FLAC", "WAV"};
-        return Arrays.stream(valid).toList().contains(ext);
+        for (String e:valid){
+            if (e.equals(ext)){
+                return true;
+            }
+        }
+        return false;
     }
     public String removeSymbols(String name){
         for (String s: this.getSymbols()){
@@ -285,11 +289,11 @@ public class FileManager {
         this.dir = dir;
     }
 
-    public List<String> getSymbols() {
+    public String[] getSymbols() {
         return symbols;
     }
 
-    public void setSymbols(List<String> symbols) {
+    public void setSymbols(String[] symbols) {
         this.symbols = symbols;
     }
 }

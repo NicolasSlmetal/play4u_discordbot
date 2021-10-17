@@ -6,7 +6,7 @@ group 'org.example'
 version '1.0-SNAPSHOT'
 compileJava.options.encoding("UTF-8")
 compileTestJava.options.encoding("UTF-8")
-task stage(dependsOn: ['build', 'clean', 'shadowJar', 'test'])
+task stage(dependsOn: ['build', 'shadowJar','clean', 'test'])
 build.mustRunAfter clean
 build.mustRunAfter test
 gradle.taskGraph.whenReady {

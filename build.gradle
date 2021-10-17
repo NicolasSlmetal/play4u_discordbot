@@ -38,6 +38,6 @@ test {
 }
 jar{
     manifest{
-        attributes 'Class-Path': '/libs/play4ubot-1.0-SNAPSHOT-all.jar', 'Main-Class': 'Main'
+        attributes 'Class-Path': '/libs/play4ubot-1.0-SNAPSHOT-all.jar', 'Main-Class': 'com.play4ubot.Main'
     }
 }

@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: Main
+com.play4ubot.Main-Class: com.play4ubot.Main
 Class-Path: build/libs/play4ubot.jar
 

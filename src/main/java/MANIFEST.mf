@@ -1,4 +1,4 @@
 
 Manifest-Version: 1.0
 Created-By: Nicolas
-Main-Class: Main
+com.play4ubot.Main-Class: com.play4ubot.Main

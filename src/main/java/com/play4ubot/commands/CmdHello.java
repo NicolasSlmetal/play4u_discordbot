@@ -5,6 +5,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 
 public class CmdHello implements CommandAction {
@@ -19,9 +23,9 @@ public class CmdHello implements CommandAction {
     }
 
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
-        Calendar data = Calendar.getInstance();
-        int hour = data.get(Calendar.HOUR_OF_DAY);
+        int hour = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).getHour();
         String hello;
+        System.out.println(hour);
         if (hour < 12 && hour > 5) {
             hello = "Bom dia";
         } else if (hour < 18 && hour >= 12) {

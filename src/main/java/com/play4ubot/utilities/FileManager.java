@@ -140,7 +140,7 @@ public class FileManager {
                 for (int c = 0; c< search.length;c++){
                     String actual = search[c];
                     final String annotherCopy = actual;
-                    Stream<String> corrects =this.getMusics().stream().filter(m -> m.substring(0, m.lastIndexOf(".")).toUpperCase().contains(annotherCopy));
+                    Stream<String> corrects =this.getMusics().stream().filter(m -> m.toUpperCase().contains(annotherCopy));
                     if (corrects.count() == 0) {
                         if (actual.length() > 3) {
                             for (char caracter : alpha) {

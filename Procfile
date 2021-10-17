@@ -1,1 +1,1 @@
-worker: java -jar build/libs/play4ubot-1.0-SNAPSHOT.JAR
+worker: java -jar build/libs/play4ubot-1.0-SNAPSHOT-all.jar

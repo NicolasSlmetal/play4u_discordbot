@@ -86,5 +86,6 @@ public class CmdBank implements CommandAction{
         for (File f : file.listFiles()){
             this.musics.add(f.getName());
         }
+        this.musics.remove("ignore");
     }
 }

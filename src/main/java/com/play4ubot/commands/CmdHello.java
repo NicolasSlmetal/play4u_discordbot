@@ -22,7 +22,6 @@ public class CmdHello implements CommandAction {
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
         int hour = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).getHour();
         String hello;
-        System.out.println(hour);
         if (hour < 12 && hour > 5) {
             hello = "Bom dia";
         } else if (hour < 18 && hour >= 12) {

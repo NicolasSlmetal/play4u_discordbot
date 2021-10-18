@@ -50,8 +50,8 @@ public class EventReader extends ListenerAdapter {
     public void onGuildJoin(@NotNull GuildJoinEvent event) {
         TextChannel defaultCh = event.getGuild().getDefaultChannel();
         defaultCh.sendMessage("@everyone, Olá a todos," +
-                " eu sou o bot Play4U. Preciso que" +
-                "definam um pré-fixo para utilizar meus comandos. Digite :** prefix \"símbolo\"**. Se preferirem" +
+                " eu sou o bot Play4U. Preciso que " +
+                "definam um pré-fixo para utilizar meus comandos. Digite :** prefix \"símbolo\"**. Se preferirem " +
                 "o pré-fixo padrão \"=\", digite:** prefix =**").queue();
         setWait_prefix(true);
     }

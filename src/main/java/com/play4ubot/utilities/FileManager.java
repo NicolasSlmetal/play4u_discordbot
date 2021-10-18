@@ -274,6 +274,7 @@ public class FileManager {
         for(File f: files){
             if (f.getName().equals(name)){
                 f.delete();
+                this.setMusics();
                 break;
             }
         }

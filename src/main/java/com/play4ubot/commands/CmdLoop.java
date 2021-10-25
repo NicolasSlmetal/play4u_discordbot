@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class CmdLoop implements CommandAction{
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix() +"LOOP", "");
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) +"LOOP", "");
         verifyCommand(cmd, user, event);
     }
 
@@ -19,8 +19,8 @@ public class CmdLoop implements CommandAction{
 
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
-        MainPlayer.setLoop();
-        event.getChannel().sendMessage(String.format("**Loop %s :repeat:**", MainPlayer.isLoop()?
+        MainPlayer.setLoop(event.getGuild());
+        event.getChannel().sendMessage(String.format("**Loop %s :repeat:**", MainPlayer.isLoop().get(event.getGuild())?
                 "ativado":"desativado")).queue();
     }
 

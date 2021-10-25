@@ -15,7 +15,7 @@ public class CmdPause implements CommandAction{
 
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix(), "").trim();
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()), "").trim();
         verifyCommand(cmd, user, event);
     }
 
@@ -31,10 +31,10 @@ public class CmdPause implements CommandAction{
             VoiceChannel botCh = event.getGuild().getAudioManager().getConnectedChannel();
             if (!userCh.getName().equals(Objects.requireNonNull(botCh).getName())) {
                 throw new IllegalArgumentException(BotConstants.NOT_IN_SAME_VOICE_CHANNEL.getConstants());
-            } else if (!MainPlayer.isPlaying()){
+            } else if (!MainPlayer.isPlaying().get(event.getGuild())){
                 event.getChannel().sendMessage("Não estou reproduzindo música :drooling_face:").queue();
                 return;
-            } else if (MainPlayer.isPaused()){
+            } else if (MainPlayer.isPaused().get(event.getGuild())){
                 event.getChannel().sendMessage("A música já está pausada :drooling_face:").queue();
             } else{
                 executeCommand(cmd, user, event);
@@ -44,7 +44,7 @@ public class CmdPause implements CommandAction{
 
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
-        MainPlayer.setPaused(true);
+        MainPlayer.setPaused(true, event.getGuild());
         event.getChannel().sendMessage("**Música em pause :pause_button:**").queue();
     }
 

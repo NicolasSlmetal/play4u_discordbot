@@ -5,26 +5,25 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEvent;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import net.dv8tion.jda.api.entities.Guild;
+
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class TrackQueue extends AudioSource{
     private final AudioPlayer player;
     private BlockingQueue<AudioTrack> playlist;
-    private static ArrayList<AudioTrack> tracks;
+    private static Set<Guild> guilds = new HashSet<>();
 
     public TrackQueue(AudioPlayer player){
         this.player = player;
         this.playlist = new LinkedBlockingQueue<>();
-        tracks = new ArrayList<>();
         }
     public void nextTrack() {
         this.player.startTrack(this.getPlaylist().poll(), false);
-        if (MainPlayer.isLoop() && this.getPlaylist().isEmpty()){
-            this.getPlaylist().addAll(tracks);
-            tracks.clear();
-        }
         }
 
     public void queuePlaylist(AudioTrack track){
@@ -35,9 +34,6 @@ public class TrackQueue extends AudioSource{
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (this.playlist.isEmpty() && !MainPlayer.isLoop()){
-            MainPlayer.setPlaying(false);
-        }
         if (endReason.mayStartNext){
             this.nextTrack();
             }
@@ -56,8 +52,11 @@ public class TrackQueue extends AudioSource{
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
-        if (MainPlayer.isLoop()){
-            TrackQueue.getTracks().add(track.makeClone());
+        for (Guild g: TrackQueue.getGuild()){
+            if (MainPlayer.isLoop().get(g) && MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack() == track){
+                this.getPlaylist().add(track.makeClone());
+                break;
+            }
         }
         super.onTrackStart(player, track);
     }
@@ -81,12 +80,6 @@ public class TrackQueue extends AudioSource{
     public void onEvent(AudioEvent event) {
         super.onEvent(event);
     }
-    public static ArrayList<AudioTrack> getTracks(){
-        return TrackQueue.tracks;
-    }
-    public static void addTracksToLoop(AudioTrack track){
-        TrackQueue.tracks.add(track);
-    }
 
     public AudioPlayer getPlayer() {
         return player;
@@ -100,7 +93,12 @@ public class TrackQueue extends AudioSource{
         this.playlist = playlist;
     }
 
-    public static void setTracks(ArrayList<AudioTrack> tracks) {
-        TrackQueue.tracks = tracks;
+
+    public static Set<Guild> getGuild() {
+        return TrackQueue.guilds;
+    }
+
+    public static void setGuild(Set<Guild> guild) {
+        TrackQueue.guilds = guild;
     }
 }

@@ -10,7 +10,7 @@ import java.awt.*;
 public class CmdPing implements CommandAction{
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix(), "").trim();
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()), "").trim();
         verifyCommand(cmd, user, event);
     }
 

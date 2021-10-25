@@ -1,6 +1,8 @@
 package com.play4ubot.utilities;
 
 import com.play4ubot.audiopackage.MainPlayer;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import java.io.*;
@@ -77,7 +79,7 @@ public class FileManager {
         name = replicant.trim() + "." + ext;
         return name;
     }
-    public String downloadFile(String name, Message.Attachment attachment, MessageChannel channel, String user){
+    public String downloadFile(String name, Message.Attachment attachment, MessageChannel channel, Guild g, String user){
         this.setMusics();
         if (verifyExtension(attachment.getFileExtension().toUpperCase())) {
             name = this.removeSymbols(name, attachment.getFileExtension());
@@ -90,12 +92,11 @@ public class FileManager {
                             return null;
                         });
                 name = this.getURLFile(attachment);
-                MainPlayer.setName_music(this.removeSymbols(attachment.getFileName(),
-                        attachment.getFileExtension()).trim());
-                channel.sendMessage(user + ",**SUCESSO**, música **" + MainPlayer.getName_music() + "** adicionada ao banco de músicas").queue();
+                MainPlayer.getName_music().replace(g, this.removeSymbols(attachment.getFileName()));
+                channel.sendMessage(user + ",**SUCESSO**, música **" + MainPlayer.getName_music().get(g) + "** adicionada ao banco de músicas").queue();
                 return name;
             } else {
-                MainPlayer.setName_music(this.getDir() + "/" + name);
+                MainPlayer.getName_music().replace(g, this.getDir() + "/" + name);
                 channel.sendMessage(user +",A música já estava no banco").queue();
                 return this.getDir() + "/" + name;
             }

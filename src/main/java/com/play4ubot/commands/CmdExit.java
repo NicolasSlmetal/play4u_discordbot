@@ -10,7 +10,7 @@ import java.awt.*;
 public class CmdExit implements CommandAction{
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix() + "SAIR", "");
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) + "SAIR", "");
         verifyCommand(cmd, user, event);
     }
 

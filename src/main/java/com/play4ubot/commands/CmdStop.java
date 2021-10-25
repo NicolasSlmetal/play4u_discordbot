@@ -12,7 +12,7 @@ import java.awt.*;
 public class CmdStop implements CommandAction{
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix() + "STOP", "");
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) + "STOP", "");
         verifyCommand(cmd, user, event);
     }
 
@@ -28,7 +28,7 @@ public class CmdStop implements CommandAction{
             VoiceChannel botCh = event.getGuild().getAudioManager().getConnectedChannel();
             if (!userCh.getName().equals(botCh.getName())){
                 throw new IllegalArgumentException(BotConstants.NOT_IN_SAME_VOICE_CHANNEL.getConstants());
-            } else if (!MainPlayer.isPlaying()){
+            } else if (!MainPlayer.isPlaying().get(event.getGuild())){
                 event.getChannel().sendMessage("Não estou reproduzindo música :drooling_face:").queue();
                 return;
             }else{
@@ -38,7 +38,10 @@ public class CmdStop implements CommandAction{
     }
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
-        MainPlayer.getITEM().stop();
+        MainPlayer.getITEM().getMusicManager(event.getGuild()).getPlayer().stopTrack();
+        MainPlayer.getITEM().getMusicManager(event.getGuild()).getTrackQueue().getPlaylist().clear();
+        MainPlayer.isPaused().replace(event.getGuild(), false);
+        MainPlayer.isPlaying().replace(event.getGuild(), false);
         event.getChannel().sendMessage("**Reprodução interrompida** :stop_button: ").queue();
     }
 

@@ -31,28 +31,30 @@ public class CmdPlay implements CommandAction{
     }
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix(), "").trim();
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()), "").trim();
         verifyCommand(cmd, user, event);
     }
 
     @Override
     public void verifyCommand(String cmd, String user, MessageReceivedEvent event) throws IllegalArgumentException {
-        if (!MainPlayer.isPaused()) {
+        if (!MainPlayer.isPaused().get(event.getGuild())) {
             String music = cmd.trim().replaceFirst("PLAY", "").trim();
             if (music.isEmpty()) {
                 if (!event.getMessage().getAttachments().isEmpty()) {
                     Message.Attachment file = event.getMessage().getAttachments().get(0);
-                    music = this.manager.downloadFile(file.getFileName(), file, event.getMessage().getChannel(), user);
+                    music = this.manager.downloadFile(file.getFileName(), file, event.getMessage().getChannel(), event.getGuild(), user);
                 } else {
                     throw new IllegalArgumentException(BotConstants.NO_ARGUMENT_TO_MUSIC.getConstants());
                 }
             } else if (!finder.isUrl(music)) {
                 try {
                     music = this.manager.searchFile(this.manager.removeSymbols(music));
-                    MainPlayer.setName_music(music);
+                    MainPlayer.getName_music().replace(event.getGuild(),music);
                     if (music == null) {
-                        event.getChannel().sendMessage("Não encontrei a música :cry:").queue();
+                        /*event.getChannel().sendMessage("Não encontrei a música :cry:").queue();
                         return;
+                         */
+                        music = "ytsearch:" + cmd.replaceFirst("PLAY", "").trim();
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -60,11 +62,11 @@ public class CmdPlay implements CommandAction{
                     throw new UnsupportedOperationException(BotConstants.NOT_IN_VOICE_CHANNEL.getConstants());
                 }
             } else{
-                if (music.contains("BANDCAMP") || music.contains("VIMEO")) {
-                    music = event.getMessage().getContentRaw().replaceFirst(MessageReader.getPrefix(),
+                if (music.contains("BANDCAMP") || music.contains("VIMEO") || music.contains("YOUTUBE")) {
+                    music = event.getMessage().getContentRaw().replaceFirst(MessageReader.getPrefix().get(event.getGuild()),
                             "").trim().substring(4).trim();
                 } else {
-                    event.getChannel().sendMessage(user + ", use URLs do Vimeo ou Bandcamp").queue();
+                    event.getChannel().sendMessage(user + ", use URLs do Youtube, Vimeo ou Bandcamp").queue();
                     return;
                 }
             }
@@ -82,17 +84,21 @@ public class CmdPlay implements CommandAction{
             }catch (IllegalArgumentException e){
                 throw new UnsupportedOperationException(BotConstants.NOT_IN_VOICE_CHANNEL.getConstants());
             }
-            executeCommand();
+            executeCommand(event.getGuild());
             event.getChannel().sendMessage("**Música retomada :play_pause:**").queue();
         }
     }
-    public void executeCommand(){
-        MainPlayer.setPaused(false);
+    public void executeCommand(Guild g){
+        MainPlayer.setPaused(false, g);
     }
     @Override
     public void executeCommand(String music, String user, MessageReceivedEvent event) {
+        if (MainPlayer.getITEM().getMusicManager(event.getGuild()).getPlayer().getPlayingTrack() == null
+        && MainPlayer.isPlaying().get(event.getGuild())){
+            MainPlayer.isPlaying().replace(event.getGuild(), false);
+        }
         TextChannel textCh = event.getTextChannel();
-        MainPlayer.getITEM().loadPlay(event.getTextChannel(), music);
+        MainPlayer.getITEM().loadPlay(textCh, music);
     }
     @Override
     public EmbedBuilder getHelp(String cmd, MessageReceivedEvent event) {

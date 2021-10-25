@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 public class CmdHello implements CommandAction {
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix(), "").trim();
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()), "").trim();
         verifyCommand(cmd, user, event);
     }
     @Override

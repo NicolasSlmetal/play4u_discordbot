@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.play4ubot.utilities.BotConstants;
 import com.play4ubot.utilities.FileManager;
-
 import java.awt.*;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class CmdAdd implements CommandAction{
     }
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix() + "ADD", "");
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) + "ADD", "");
         verifyCommand(cmd, user, event);
     }
 
@@ -37,7 +36,7 @@ public class CmdAdd implements CommandAction{
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
         Message.Attachment file = event.getMessage().getAttachments().get(0);
         String music = file.getFileName();
-        this.getFileManager().downloadFile(music, file, event.getChannel(), user);
+        this.getFileManager().downloadFile(music, file, event.getChannel(), event.getGuild(), user);
     }
 
     @Override

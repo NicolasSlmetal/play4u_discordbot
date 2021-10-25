@@ -30,7 +30,7 @@ public class CmdHelp implements CommandAction{
     }
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix(), "").trim();
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()), "").trim();
         verifyCommand(cmd, user, event);
     }
 
@@ -73,7 +73,7 @@ public class CmdHelp implements CommandAction{
         }
         EmbedBuilder embed = new EmbedBuilder()
                 .setAuthor(event.getJDA().getSelfUser().getName())
-                .addField("Préfixo atual: ", MessageReader.getPrefix(), true)
+                .addField("Préfixo atual: ", MessageReader.getPrefix().get(event.getGuild()), true)
                 .setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
                 .setColor(new Color(0x04D7D7))
                 .setTitle("Ajuda: Comandos do Play4U")

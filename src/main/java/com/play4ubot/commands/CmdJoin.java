@@ -12,7 +12,7 @@ import java.awt.*;
 public class CmdJoin implements CommandAction{
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix() + "ENTRAR", "");
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) + "ENTRAR", "");
         verifyCommand(cmd, user, event);
     }
 

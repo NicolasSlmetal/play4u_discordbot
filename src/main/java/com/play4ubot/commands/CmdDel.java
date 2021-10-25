@@ -1,17 +1,19 @@
 package com.play4ubot.commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.play4ubot.utilities.BotConstants;
 import com.play4ubot.utilities.FileManager;
 import com.play4ubot.listeners.MessageReader;
 
 import java.awt.*;
+import java.util.HashMap;
 
 public class CmdDel implements CommandAction{
     private String music;
     private FileManager manager = new FileManager();
-    private static String member;
+    private static HashMap<Guild, String> member = new HashMap<>();
 
     public String getMusic() {
         return music;
@@ -29,18 +31,18 @@ public class CmdDel implements CommandAction{
         this.manager = manager;
     }
 
-    public static String getMember() {
+    public static HashMap<Guild, String> getMember() {
         return member;
     }
 
-    public static void setMember(String member) {
+    public static void setMember(HashMap<Guild, String> member) {
         CmdDel.member = member;
     }
 
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix() + "DEL", "").trim();
-        setMember(event.getMember().getUser().getName());
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) + "DEL", "").trim();
+        getMember().put(event.getGuild(), user);
         verifyCommand(cmd, user, event);
     }
 
@@ -59,13 +61,14 @@ public class CmdDel implements CommandAction{
             }
                 event.getChannel().sendMessage(user +", Estou prestes a deletar a música **" + this.getMusic() +
                 "**. Tem ceteza que deseja prosseguir?:face_with_monocle: [Responda com \"Sim\" ou \"Não\"]  ").queue();
-                MessageReader.setWait_answer(true);
+                MessageReader.isWait_answer().replace(event.getGuild(), true);
             }
         }
 
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
         this.getManager().deleteFile(this.getMusic());
+        getMember().remove(event.getGuild(), user);
     }
     public void executeCommand(){
 

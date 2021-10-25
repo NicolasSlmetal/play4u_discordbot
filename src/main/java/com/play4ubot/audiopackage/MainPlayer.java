@@ -10,20 +10,19 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
-
 import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.stream.Collectors;
+import java.util.Stack;
 
-public class MainPlayer extends AudioSource{
+public class MainPlayer{
     private static MainPlayer ITEM;
-    private static String name_music;
-    private static boolean playing = false;
-    private static boolean paused = false;
-    private static boolean loop = false;
+    private static HashMap<Guild,String> name_music = new HashMap<>();
+    private static HashMap<Guild, Boolean> playing = new HashMap<>();
+    private static HashMap<Guild, Boolean> paused = new HashMap<>();
+    private static HashMap<Guild, Boolean> loop = new HashMap<>();
     private final HashMap<Long, MainAudioManager> musicMapManagers;
     private final AudioPlayerManager manager;
     public MainPlayer(){
@@ -88,29 +87,29 @@ public class MainPlayer extends AudioSource{
             @Override
             public void trackLoaded(AudioTrack track) {
                 MainPlayer.getITEM().sendDuration(track.getDuration());
-                MainPlayer.setPaused(false);
-                String title = MainPlayer.isPlaying()?"Adicionado na fila":"Tocando";
+                MainPlayer.setPaused(false, textCh.getGuild());
+                String title = MainPlayer.isPlaying().get(textCh.getGuild())?"Adicionado na fila":"Tocando";
                 main.getTrackQueue().queuePlaylist(track);
                 EmbedBuilder embed;
                 if (!track.getInfo().title.equalsIgnoreCase("Unknown Title")){
-                    MainPlayer.setName_music(track.getInfo().title);
+                    MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().title);
                 }
-                if (!MainPlayer.isPlaying()) {
-                    MainPlayer.setPlaying(true);
-                    embed = setMusicEmbed(MainPlayer.getName_music(), title, sendDuration(track.getDuration()));
+                if (!MainPlayer.isPlaying().get(textCh.getGuild())) {
+                    MainPlayer.isPlaying().put(textCh.getGuild(), true);
+                    embed = setMusicEmbed(MainPlayer.getName_music().get(textCh.getGuild()),
+                            title, sendDuration(track.getDuration()));
                 } else {
                     long timeActual = main.getPlayer().getPlayingTrack().getPosition();
                     long timeToEnd = main.getPlayer().getPlayingTrack().getDuration();
                     long totalTime = timeToEnd - timeActual;
                     for (AudioTrack t : main.getTrackQueue().getPlaylist()){
-                        if (t != track){
+                        if (t != track && t != main.getPlayer().getPlayingTrack()){
                             totalTime += t.getDuration();
-                        } else {
-                            break;
                         }
                     }
                     String timeToNext = sendDuration(totalTime);
-                    embed = setMusicEmbed(MainPlayer.getName_music(), title, sendDuration(track.getDuration()),
+                    embed = setMusicEmbed(MainPlayer.getName_music()
+                                    .get(textCh.getGuild()), title, sendDuration(track.getDuration()),
                             timeToNext);
                 }
                 textCh.sendMessageEmbeds(embed.setAuthor(textCh.getJDA().getSelfUser().getName())
@@ -119,12 +118,12 @@ public class MainPlayer extends AudioSource{
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                main.getPlayer().startTrack(playlist.getTracks().get(0), true);
+                trackLoaded(playlist.getTracks().get(0));
             }
 
             @Override
             public void noMatches() {
-
+                textCh.sendMessage("Não encontrei a música :cry:").queue();
             }
 
             @Override
@@ -141,60 +140,29 @@ public class MainPlayer extends AudioSource{
         return ITEM;
     }
 
-    public static String getName_music() {
+    public static HashMap<Guild, String> getName_music() {
         return name_music;
     }
 
-    public static void setName_music(String name_music) {
+    public static void setName_music(HashMap<Guild, String> name_music) {
         MainPlayer.name_music = name_music;
     }
 
-    public static void setPlaying(boolean playing) {
+    public static void setPlaying(HashMap<Guild, Boolean> playing) {
         MainPlayer.playing = playing;
     }
 
-    public static boolean isPlaying() {
+    public static HashMap<Guild, Boolean> isPlaying() {
         return playing;
     }
 
-    public static boolean isPaused() {
+    public static HashMap<Guild, Boolean> isPaused() {
         return paused;
     }
 
-    public static void setPaused(boolean option) {
-        long id = MainPlayer.getITEM().musicMapManagers.keySet().stream().collect(Collectors.toList()).get(0);
-        MainPlayer.getITEM().musicMapManagers.get(id).getPlayer().setPaused(option);
-        MainPlayer.paused = option;
-    }
-    @Override
-    public ArrayList<String> skip(){
-        long id = MainPlayer.getITEM().musicMapManagers.keySet().stream().collect(Collectors.toList()).get(0);
-        String name_skiped = MainPlayer.getITEM().musicMapManagers.get(id).getPlayer().getPlayingTrack().getInfo().title;
-        MainPlayer.getITEM().musicMapManagers.get(id).getTrackQueue().nextTrack();
-        String name_actual;
-        try {
-            name_actual = MainPlayer.getITEM().musicMapManagers.get(id).getPlayer().getPlayingTrack().getInfo().title
-            + "\nDuração: " + MainPlayer.getITEM().sendDuration(MainPlayer.getITEM().getMusicMapManagers()
-                    .get(id).getPlayer().getPlayingTrack().getDuration());
-            MainPlayer.setPlaying(true);
-        }catch (NullPointerException n){
-            name_actual = "null";
-            MainPlayer.paused = false;
-            MainPlayer.setPlaying(false);
-        }
-        ArrayList<String> names = new ArrayList<>();
-        names.add(name_skiped);
-        names.add(name_actual);
-        return names;
-    }
-    @Override
-    public void stop(){
-        long id = MainPlayer.getITEM().musicMapManagers.keySet().stream().collect(Collectors.toList()).get(0);
-        MainPlayer.getITEM().musicMapManagers.get(id).getPlayer().stopTrack();
-        MainPlayer.getITEM().musicMapManagers.get(id).getTrackQueue().getPlaylist().clear();
-        MainPlayer.getITEM().musicMapManagers.get(id).getTrackQueue().nextTrack();
-        MainPlayer.paused = false;
-        MainPlayer.setPlaying(false);
+    public static void setPaused(boolean option, Guild g) {
+        MainPlayer.getITEM().getMusicManager(g).getPlayer().setPaused(option);
+        MainPlayer.isPaused().replace(g, option);
     }
 
     public AudioPlayerManager getManager() {
@@ -205,21 +173,19 @@ public class MainPlayer extends AudioSource{
         MainPlayer.ITEM = ITEM;
     }
 
-    public static boolean isLoop() {
+    public static HashMap<Guild, Boolean> isLoop() {
         return loop;
     }
 
-    public static void setLoop() {
-        MainPlayer.loop = !loop;
-        if (!MainPlayer.isLoop()){
-            TrackQueue.getTracks().clear();
-        }
-        if (MainPlayer.isPlaying() && MainPlayer.isLoop()){
-            long id = MainPlayer.getITEM().musicMapManagers.keySet().stream().collect(Collectors.toList()).get(0);
-            AudioTrack track = MainPlayer.getITEM().musicMapManagers.get(id).getPlayer().getPlayingTrack();
-            TrackQueue.getTracks().clear();
-            TrackQueue.addTracksToLoop(track.makeClone());
-            System.out.println(TrackQueue.getTracks());
+    public static void setLoop(Guild g) {
+        if (MainPlayer.isLoop().get(g)) {
+            MainPlayer.isLoop().replace(g, false);
+        } else {
+            MainPlayer.isLoop().replace(g, true);
+            if (MainPlayer.isPlaying().get(g)) {
+                AudioTrack track = MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().makeClone();
+                System.out.println(MainPlayer.getITEM().getMusicManager(g).getTrackQueue().getPlaylist().add(track));
+            }
         }
     }
     public HashMap<Long, MainAudioManager> getMusicMapManagers() {

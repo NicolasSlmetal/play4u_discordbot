@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class CmdPrefix implements CommandAction{
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix() + "PREFIXO", "").trim();
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) + "PREFIXO", "").trim();
         verifyCommand(cmd, user, event);
     }
 
@@ -28,8 +28,8 @@ public class CmdPrefix implements CommandAction{
 
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
-        MessageReader.setPrefix(cmd);
-        event.getChannel().sendMessage(String.format("**SUCESSO**, pré-fixo definido como **\"%s\"**", MessageReader.getPrefix()
+        MessageReader.getPrefix().replace(event.getGuild(), cmd);
+        event.getChannel().sendMessage(String.format("**SUCESSO**, pré-fixo definido como **\"%s\"**", MessageReader.getPrefix().get(event.getGuild())
         )).queue();
     }
 

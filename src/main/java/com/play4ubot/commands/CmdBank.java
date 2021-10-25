@@ -17,7 +17,7 @@ public class CmdBank implements CommandAction{
     private ArrayList<String> musics = new ArrayList<>();
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
-        cmd = cmd.replaceFirst(MessageReader.getPrefix() + "BANCO", "").trim();
+        cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) + "BANCO", "").trim();
         verifyCommand(cmd, user, event);
     }
 

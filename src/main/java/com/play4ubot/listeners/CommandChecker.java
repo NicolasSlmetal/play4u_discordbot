@@ -23,9 +23,9 @@ public class CommandChecker {
         }
     }
     public void loadCommand(String name, MessageReceivedEvent event, String user){
-        String[] splitMsg = name.replaceFirst(MessageReader.getPrefix(), "").trim().split(" ");
+        String[] splitMsg = name.replaceFirst(MessageReader.getPrefix().get(event.getGuild()), "").trim().split(" ");
         for (String key : this.getCmdMap().keySet()){
-            if (splitMsg[0].replaceFirst(MessageReader.getPrefix(), "").trim().equals(key)){
+            if (splitMsg[0].replaceFirst(MessageReader.getPrefix().get(event.getGuild()), "").trim().equals(key)){
                 try{
                     this.getCmdMap().get(key).getCommand(name.substring(0, 1) + name.substring(1).trim()
                             , user, event);

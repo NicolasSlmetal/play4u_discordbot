@@ -57,9 +57,9 @@ public class CmdHelp implements CommandAction{
                 ,"Reproduz ou retoma a reprodução de uma música. É necessário estar\n" +
                 "                                conectado a um canal de voz. Além disso, precisa do nome da música, caso não\n" +
                 "                                 haja uma pausada. Como música, aceito o nome, arquivo(mp3, m4a, wav, Opus, mp4) e\n" +
-                "                                 URLs do Vimeo e BandCamp\n", "Pausa uma música\n", "Pula uma música e segue para a próxima na playlist, se houver\n",
-        "Para a reprodução de uma playlist, cancelando todas as músicas\n", "Ativa um loop de reprodução. Não é necessário estar num canal de voz\n", "" +
-                "Adicona uma música ao banco de músicas do bot. É necessário anexar" +
+                "                                 URLs do Youtube, Vimeo e BandCamp\n", "Pausa uma música\n", "Pula uma música e segue para a próxima na playlist, se houver\n",
+         "Ativa um loop de reprodução. Não é necessário estar num canal de voz\n", "Para a reprodução de uma playlist, cancelando todas as músicas\n","" +
+                "Adicona uma música ao banco de músicas do bot. É necessário anexar " +
                 "um arquivo, com extensão válida\n", "Exibe as músicas presentes no banco musical do bot." +
                 "Tem um parâmetro opcional, tornando a busca mais precisa\n", "Entra no canal de voz onde o usuário está conectado\n",
                 "Retira o bot de um canal de voz\n", "Deleta uma música do banco de músicas. É um comando perigoso, use com sabedoria...\n", "Altera o pré-fixo utilizado para comandos do Play4U"};

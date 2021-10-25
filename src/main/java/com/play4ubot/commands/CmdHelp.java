@@ -68,7 +68,7 @@ public class CmdHelp implements CommandAction{
                 "SAIR", "DEL", "PREFIXO"};
         for (String cmdN: names){
             if (desc.hasNext()){
-                description += String.format("**%s%s**:%s", MessageReader.getPrefix(), cmdN, desc.next());
+                description += String.format("**%s%s**:%s", MessageReader.getPrefix().get(event.getGuild()), cmdN, desc.next());
             }
         }
         EmbedBuilder embed = new EmbedBuilder()

@@ -110,14 +110,11 @@ public class FileManager {
             } else {
                 MainPlayer.getName_music().replace(g, this.getDir() + "/" + name);
                 channel.sendMessage(user +",A música já estava no banco").queue();
-                boolean exists = Files.exists(Path.of(this.getDir() + "/" + name));
-                if (!exists){
-                    String query = String.format("name = '%s'", name);
-                    try {
+                String query = String.format("name = '%s'", name);
+                try {
                         this.getCloud().downloadFile(name, this.getCloud().getDriver().files().list().setQ(query).execute().getFiles().get(0).getId());
-                    } catch (IOException e){
+                } catch (IOException e){
                         e.printStackTrace();
-                    }
                 }
                 this.setMusics();
                 return this.getDir() + "/" + name;

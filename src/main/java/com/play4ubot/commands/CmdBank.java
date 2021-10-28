@@ -5,9 +5,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.play4ubot.utilities.BotConstants;
 import com.play4ubot.utilities.FileManager;
-
 import java.awt.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -82,10 +80,6 @@ public class CmdBank implements CommandAction{
     }
 
     public void setMusics() {
-        File file = new FileManager().getDir();
-        for (File f : file.listFiles()){
-            this.musics.add(f.getName());
-        }
-        this.musics.remove("ignore");
+        this.musics.addAll(new FileManager().getMusics());
     }
 }

@@ -1,5 +1,6 @@
 package com.play4ubot.listeners;
 
+import java.io.IOException;
 import java.util.HashMap;
 import com.play4ubot.commands.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -42,7 +43,7 @@ public class CommandChecker {
             }
         }
     }
-    public void executeDangerousOperation(String user, MessageReceivedEvent event){
+    public void executeDangerousOperation(String user, MessageReceivedEvent event) throws IOException {
         this.getCmdMap().get("DEL").executeCommand("SIM", user, event);
     }
 }

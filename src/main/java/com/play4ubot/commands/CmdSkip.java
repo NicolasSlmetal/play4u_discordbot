@@ -43,7 +43,6 @@ public class CmdSkip implements CommandAction{
         ArrayList<String> names = new ArrayList<>();
         names.add(MainPlayer.getITEM().getMusicManager(event.getGuild()).getPlayer().getPlayingTrack().getInfo().title);
         MainPlayer.getITEM().getMusicManager(event.getGuild()).getTrackQueue().nextTrack();
-
         try{
             names.add(MainPlayer.getITEM().getMusicManager(event.getGuild()).getPlayer().getPlayingTrack().getInfo().title);
         }catch (NullPointerException e){

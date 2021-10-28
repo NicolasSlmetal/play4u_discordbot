@@ -8,6 +8,7 @@ import com.play4ubot.utilities.FileManager;
 import com.play4ubot.listeners.MessageReader;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class CmdDel implements CommandAction{
@@ -53,8 +54,7 @@ public class CmdDel implements CommandAction{
         } else {
             String music_file = manager.searchFile(cmd);
             if (music_file != null) {
-                String[] dir = music_file.split("audiofiles");
-                this.setMusic(dir[dir.length - 1].substring(1));
+                this.setMusic(music_file);
             } else{
                 event.getChannel().sendMessage(user + ", Não encontrei a música :cry:").queue();
                 return;
@@ -67,10 +67,16 @@ public class CmdDel implements CommandAction{
 
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
-        this.getManager().deleteFile(this.getMusic());
+        try {
+            this.getManager().deleteFile(this.getMusic());
+        }catch (Exception e){
+            try {
+                throw new IOException("Não foi possível deletar o arquivo");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
         getMember().remove(event.getGuild(), user);
-    }
-    public void executeCommand(){
 
     }
 

@@ -30,7 +30,7 @@ public class EventReader extends ListenerAdapter {
     public void onGenericEvent(@NotNull GenericEvent event) {
         if (event instanceof ReadyEvent) {
             for (Guild g : event.getJDA().getGuilds()) {
-                System.out.println(g.getName() + ":" + g.getOwnerId());
+                System.out.println(g.getName() + ":" + g.getId());
                 System.out.print("Membros: ");
                 for (Member u : g.getMembers()) {
                     System.out.printf("%s -> %s ", u.getUser().getName(), u.getId());
@@ -48,7 +48,7 @@ public class EventReader extends ListenerAdapter {
                 MainPlayer.isPaused().put(g, false);
                 MainPlayer.isLoop().put(g, false);
                 MainPlayer.getName_music().put(g, null);
-                MessageReader.getPrefix().put(g, "=");
+                MessageReader.getPrefix().put(g, "!");
                 isWait_prefix().put(g, false);
                 MessageReader.isWait_answer().put(g, false);
                 TrackQueue.getGuild().add(g);

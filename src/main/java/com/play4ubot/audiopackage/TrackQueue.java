@@ -6,8 +6,6 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.Guild;
-
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -17,6 +15,7 @@ public class TrackQueue extends AudioSource{
     private final AudioPlayer player;
     private BlockingQueue<AudioTrack> playlist;
     private static Set<Guild> guilds = new HashSet<>();
+    private AudioTrack firstInLoop;
 
     public TrackQueue(AudioPlayer player){
         this.player = player;
@@ -53,8 +52,12 @@ public class TrackQueue extends AudioSource{
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         for (Guild g: TrackQueue.getGuild()){
-            if (MainPlayer.isLoop().get(g) && MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack() == track){
-                this.getPlaylist().add(track.makeClone());
+            if (MainPlayer.isLoop().get(g)){
+                AudioTrack trackClone = track.makeClone();
+                this.getPlaylist().add(trackClone);
+                if (this.getPlaylist().size() == 1) {
+                    this.firstInLoop = trackClone;
+                }
                 break;
             }
         }
@@ -100,5 +103,21 @@ public class TrackQueue extends AudioSource{
 
     public static void setGuild(Set<Guild> guild) {
         TrackQueue.guilds = guild;
+    }
+
+    public static Set<Guild> getGuilds() {
+        return guilds;
+    }
+
+    public static void setGuilds(Set<Guild> guilds) {
+        TrackQueue.guilds = guilds;
+    }
+
+    public AudioTrack getFirstInLoop() {
+        return firstInLoop;
+    }
+
+    public void setFirstInLoop(AudioTrack firstInLoop) {
+        this.firstInLoop = firstInLoop;
     }
 }

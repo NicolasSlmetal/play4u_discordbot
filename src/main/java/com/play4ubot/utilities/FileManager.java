@@ -2,10 +2,11 @@ package com.play4ubot.utilities;
 
 import com.play4ubot.audiopackage.MainPlayer;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,16 +14,20 @@ import java.util.stream.Stream;
 public class FileManager {
     private Set<String> musics = new HashSet<>();
     private File dir;
+    private final DriveManager cloud;
     private String[] symbols;
     public FileManager(){
+        this.cloud = new DriveManager();
         this.dir = new File(System.getProperty("user.dir") + "/audiofiles");
         try {
-            for (File f : this.dir.listFiles()) {
-                this.musics.add(f.getName().replace("_", " "));
+            for (com.google.api.services.drive.model.File f : cloud.getDriver().files().list().setQ("not name contains 'audiofiles'").setFields("nextPageToken, files(name)").execute().getFiles()) {
+                this.musics.add(f.getName());
             }
             this.musics.remove("ignore");
         }catch (NullPointerException e){
             System.out.println("Não há arquivos");
+        } catch (IOException e){
+            System.out.println("Acesso ao drive corrompido");
         }
         this.symbols = new String[]{"!", "(", ")", "?", "<", ">", "´", "'", "\"",
         "&", "_", "/", "[", "]"};
@@ -91,6 +96,13 @@ public class FileManager {
                             e.printStackTrace();
                             return null;
                         });
+                try {
+                    channel.sendMessage("Adicionando a música ao banco. Aguarde...").queue();
+                    Thread.sleep(3000);
+                    this.getCloud().uploadFile(name ,attachment.getFileExtension());
+                } catch (IOException | InterruptedException e){
+                    channel.sendMessage("Não consegui fazer upload :cry:").queue();
+                }
                 name = this.getURLFile(attachment);
                 MainPlayer.getName_music().replace(g, this.removeSymbols(attachment.getFileName()));
                 channel.sendMessage(user + ",**SUCESSO**, música **" + MainPlayer.getName_music().get(g) + "** adicionada ao banco de músicas").queue();
@@ -98,6 +110,15 @@ public class FileManager {
             } else {
                 MainPlayer.getName_music().replace(g, this.getDir() + "/" + name);
                 channel.sendMessage(user +",A música já estava no banco").queue();
+                if (!Files.exists(Path.of(this.getDir() + "/" + name))){
+                    String query = String.format("name = '%s'", name);
+                    try {
+                        this.getCloud().downloadFile(name, this.getCloud().getDriver().files().list().setQ(query).execute().getFiles().get(0).getId());
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+                this.setMusics();
                 return this.getDir() + "/" + name;
             }
         } else{
@@ -241,7 +262,7 @@ public class FileManager {
        }
        Random n = new Random();
        if (!searchs.isEmpty()) {
-           return String.format("%s/%s", this.getDir(), searchs.size() > 1 ? searchs.get(n.nextInt(searchs.size()
+           return String.format("%s",searchs.size() > 1 ? searchs.get(n.nextInt(searchs.size()
            )):searchs.get(0));
        }else {
            return null;
@@ -270,14 +291,13 @@ public class FileManager {
         }
         return searchs.stream().sorted().collect(Collectors.toList());
     }
-    public void deleteFile(String name){
-        File[] files = this.getDir().listFiles();
-        for(File f: files){
-            if (f.getName().equals(name)){
-                f.delete();
-                this.setMusics();
-                break;
-            }
+    public void deleteFile(String name) throws IOException {
+        String query = String.format("name='%s'", name);
+        String id = this.getCloud().getDriver().files().list().setQ(query).setFields("nextPageToken, files(id)")
+                .execute().getFiles().get(0).getId();
+        boolean deleted = this.getCloud().deleteFile(id);
+        if (deleted) {
+            this.setMusics();
         }
     }
     public Set<String> getMusics() {
@@ -286,11 +306,14 @@ public class FileManager {
 
     public void setMusics() {
         try {
-            for (File f : this.dir.listFiles()) {
-                this.musics.add(f.getName().replace("_", " "));
+            List<com.google.api.services.drive.model.File> list = this.getCloud().getDriver().files().list().setQ("not name contains 'audiofiles'").setFields("nextPageToken, files(name)").execute().getFiles();
+            for (com.google.api.services.drive.model.File f : list) {
+                this.musics.add(f.getName());
             }
         }catch (NullPointerException n){
             n.fillInStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
         }
 
     }
@@ -309,5 +332,9 @@ public class FileManager {
 
     public void setSymbols(String[] symbols) {
         this.symbols = symbols;
+    }
+
+    public DriveManager getCloud() {
+        return this.cloud;
     }
 }

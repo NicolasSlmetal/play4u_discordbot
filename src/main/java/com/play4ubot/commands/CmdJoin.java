@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
 import com.play4ubot.utilities.BotConstants;
-
 import java.awt.*;
 
 public class CmdJoin implements CommandAction{

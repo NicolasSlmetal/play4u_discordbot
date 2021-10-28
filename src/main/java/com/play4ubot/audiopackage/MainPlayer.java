@@ -15,7 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class MainPlayer{
     private static MainPlayer ITEM;
@@ -58,10 +60,16 @@ public class MainPlayer{
                 .setDescription(name + "\nDuração: " + duration);
     }
     public String sendDuration(long milisecs){
-        float seconds = milisecs / 1000;
+        float seconds = (float) milisecs / 1000;
         double min = (double) seconds / 60;
         seconds = (float) (min - Math.floor(min)) * 60;
         int minutes = (int) min;
+        double hour = 0;
+        if (minutes >= 60){
+            hour = (double) minutes/60;
+            min = (hour - Math.floor(hour)) * 60;
+            minutes = (int) min;
+        }
         String current;
         if (seconds >= 60){
             minutes++;
@@ -72,6 +80,7 @@ public class MainPlayer{
         } else {
             current = String.format("%d:%.0f", minutes, seconds);
         }
+        current = hour != 0? String.format("%.0f:%s", hour, minutes < 10?String.format("0%d:%.0f", minutes, seconds):current):current;
         return  current;
     }
     public MainAudioManager getMusicManager(Guild g){
@@ -86,12 +95,36 @@ public class MainPlayer{
         this.manager.loadItemOrdered(main, trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                MainPlayer.getITEM().sendDuration(track.getDuration());
+                List<AudioTrack> old = new ArrayList<>();
+                if (MainPlayer.isLoop().get(textCh.getGuild()) && main.getTrackQueue().getPlaylist().size() > 0){
+                    ArrayList<AudioTrack> reversed = new ArrayList<>(main.getTrackQueue().getPlaylist());
+                    if (!reversed.get(reversed.size() - 1).getInfo().title.equalsIgnoreCase(main.getTrackQueue().getFirstInLoop().getInfo().title)){
+                        for(int c=0;c< reversed.size();c++){
+                            if (reversed.get(c).getInfo().title.equalsIgnoreCase(main.getTrackQueue().getFirstInLoop().getInfo().title))
+                                if (c == 0){
+                                    old.addAll(reversed);
+                                    break;
+                                } else{
+                                    for(int i=c; i< reversed.size();i++){
+                                        old.add(reversed.get(i));
+                                    }
+                                    break;
+                                }
+                        }
+                    } else {
+                        old.add(reversed.get(reversed.size() - 1));
+                    }
+                    for (AudioTrack t: old) {
+                        reversed.remove(t);
+                    }
+                    main.getTrackQueue().getPlaylist().clear();
+                    main.getTrackQueue().getPlaylist().addAll(reversed);
+                }
                 MainPlayer.setPaused(false, textCh.getGuild());
-                String title = MainPlayer.isPlaying().get(textCh.getGuild())?"Adicionado na fila":"Tocando";
+                String title = MainPlayer.isPlaying().get(textCh.getGuild()) ? "Adicionado na fila" : "Tocando";
                 main.getTrackQueue().queuePlaylist(track);
                 EmbedBuilder embed;
-                if (!track.getInfo().title.equalsIgnoreCase("Unknown Title")){
+                if (!track.getInfo().title.equalsIgnoreCase("Unknown Title")) {
                     MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().title);
                 }
                 if (!MainPlayer.isPlaying().get(textCh.getGuild())) {
@@ -102,8 +135,8 @@ public class MainPlayer{
                     long timeActual = main.getPlayer().getPlayingTrack().getPosition();
                     long timeToEnd = main.getPlayer().getPlayingTrack().getDuration();
                     long totalTime = timeToEnd - timeActual;
-                    for (AudioTrack t : main.getTrackQueue().getPlaylist()){
-                        if (t != track && t != main.getPlayer().getPlayingTrack()){
+                    for (AudioTrack t : main.getTrackQueue().getPlaylist()) {
+                        if (t != track && t != main.getPlayer().getPlayingTrack()) {
                             totalTime += t.getDuration();
                         }
                     }
@@ -114,6 +147,11 @@ public class MainPlayer{
                 }
                 textCh.sendMessageEmbeds(embed.setAuthor(textCh.getJDA().getSelfUser().getName())
                         .setThumbnail(textCh.getJDA().getSelfUser().getAvatarUrl()).build()).queue();
+                if (!old.isEmpty()){
+                    for (AudioTrack t: old){
+                        main.getTrackQueue().getPlaylist().add(t);
+                    }
+                }
             }
 
             @Override
@@ -184,7 +222,8 @@ public class MainPlayer{
             MainPlayer.isLoop().replace(g, true);
             if (MainPlayer.isPlaying().get(g)) {
                 AudioTrack track = MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().makeClone();
-                System.out.println(MainPlayer.getITEM().getMusicManager(g).getTrackQueue().getPlaylist().add(track));
+                MainPlayer.getITEM().getMusicManager(g).getTrackQueue().getPlaylist().add(track);
+                MainPlayer.getITEM().getMusicManager(g).getTrackQueue().setFirstInLoop(track);
             }
         }
     }

@@ -4,6 +4,7 @@ import com.play4ubot.audiopackage.MainPlayer;
 import com.play4ubot.listeners.MessageReader;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import java.awt.*;
 
 public class CmdLoop implements CommandAction{
     @Override
@@ -26,6 +27,10 @@ public class CmdLoop implements CommandAction{
 
     @Override
     public EmbedBuilder getHelp(String cmd, MessageReceivedEvent event) {
-        return null;
+        return new EmbedBuilder().setTitle("LOOP").setDescription("Ativa um loop de reprodução," +
+                " não é necessário estar conectado a um canal de voz")
+                .setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
+                .setAuthor(event.getJDA().getSelfUser().getName())
+                .setColor(new Color(0x04D7D7));
     }
 }

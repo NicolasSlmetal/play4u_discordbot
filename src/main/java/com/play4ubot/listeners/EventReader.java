@@ -48,7 +48,7 @@ public class EventReader extends ListenerAdapter {
                 MainPlayer.isPaused().put(g, false);
                 MainPlayer.isLoop().put(g, false);
                 MainPlayer.getName_music().put(g, null);
-                MessageReader.getPrefix().put(g, "!");
+                MessageReader.getPrefix().put(g, "=");
                 isWait_prefix().put(g, false);
                 MessageReader.isWait_answer().put(g, false);
                 TrackQueue.getGuild().add(g);

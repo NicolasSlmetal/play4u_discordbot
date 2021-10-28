@@ -24,7 +24,7 @@ import java.util.List;
 
 public class DriveManager {
     private String name;
-    private Path path = Paths.get(System.getProperty("user.dir") + "/src/main/java/com/play4ubot/utilities");
+    private Path path = Paths.get(System.getProperty("user.dir"));
     private JsonFactory json;
     private String tokens;
     private List<String> scopes;
@@ -36,7 +36,7 @@ public class DriveManager {
         this.name = "play4ubot";
         this.tokens = "credentials/token";
         this.json = JacksonFactory.getDefaultInstance();
-        this.credentials = System.getProperty("user.dir") + "/src/main/java/com/play4ubot/utilities/credentials/client_secret.json";
+        this.credentials = System.getProperty("user.dir") + "/credentials/client_secret.json";
         this.scopes = Collections.singletonList(DriveScopes.DRIVE);
         this.setDriver();
         this.setDir();

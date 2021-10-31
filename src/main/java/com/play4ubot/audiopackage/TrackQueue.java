@@ -22,7 +22,7 @@ public class TrackQueue extends AudioSource{
         this.playlist = new LinkedBlockingQueue<>();
         }
     public void nextTrack() {
-        this.player.startTrack(this.getPlaylist().poll(), false);
+        this.getPlayer().startTrack(this.getPlaylist().poll(), false);
         }
 
     public void queuePlaylist(AudioTrack track){
@@ -33,6 +33,14 @@ public class TrackQueue extends AudioSource{
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        if (this.getPlaylist().isEmpty() && this.getPlayer().getPlayingTrack() == null){
+            for (Guild g : getGuilds()){
+                if (MainPlayer.isPlaying().get(g)){
+                    MainPlayer.isPlaying().replace(g, false);
+                    break;
+                }
+            }
+        }
         if (endReason.mayStartNext){
             this.nextTrack();
             }

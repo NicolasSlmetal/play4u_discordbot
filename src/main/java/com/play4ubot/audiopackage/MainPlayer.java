@@ -71,7 +71,7 @@ public class MainPlayer{
             minutes = (int) min;
         }
         String current;
-        if (seconds >= 60){
+        if (seconds >= 60 || Math.round(seconds) >= 60){
             minutes++;
             seconds = 0;
         }

@@ -43,7 +43,7 @@ public class FileManager {
     }
     public String removeSymbols(String name){
         for (String s: this.getSymbols()){
-            if (!s.equals("_") && !s.equals("'") & !s.equals("/")) {
+            if (!s.equals("_") && !s.equals("'") & !s.equals("/") & !s.equals("!")) {
                 name = name.replace(s, "");
             }else{
                 name = name.replace(s, " ");
@@ -53,7 +53,7 @@ public class FileManager {
     }
     public String removeSymbols(String name, String ext){
         for (String s: this.getSymbols()){
-            if (!s.equals("_") && !s.equals("/") && !s.equals("'")) {
+            if (!s.equals("_") && !s.equals("/") && !s.equals("'") & !s.equals("!")) {
                 name = name.replace(s, "");
             }else{
                 name = name.replace(s, " ");

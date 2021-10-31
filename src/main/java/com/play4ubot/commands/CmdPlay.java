@@ -20,7 +20,7 @@ public class CmdPlay implements CommandAction{
         this.finder = new URLFinder();
     }
 
-    public void conectChannel(Member member) {
+    public void connectChannel(Member member) {
         try {
             VoiceChannel channel = member.getVoiceState().getChannel();
             AudioManager manager = member.getGuild().getAudioManager();
@@ -37,6 +37,11 @@ public class CmdPlay implements CommandAction{
 
     @Override
     public void verifyCommand(String cmd, String user, MessageReceivedEvent event) throws IllegalArgumentException {
+        try {
+            this.connectChannel(event.getMember());
+        }catch (IllegalArgumentException e){
+            throw new UnsupportedOperationException(BotConstants.NOT_IN_VOICE_CHANNEL.getConstants());
+        }
         if (!MainPlayer.isPaused().get(event.getGuild())) {
             String music = cmd.trim().replaceFirst("PLAY", "").trim();
             if (music.isEmpty()) {
@@ -69,7 +74,7 @@ public class CmdPlay implements CommandAction{
                     throw new UnsupportedOperationException(BotConstants.NOT_IN_VOICE_CHANNEL.getConstants());
                 }
             } else{
-                if (music.contains("BANDCAMP") || music.contains("VIMEO") || music.contains("YOUTUBE")) {
+                if (music.contains("BANDCAMP") || music.contains("VIMEO") || music.contains("YOUTUBE") || music.contains("YOUTU.BE")) {
                     music = event.getMessage().getContentRaw().replaceFirst(MessageReader.getPrefix().get(event.getGuild()),
                             "").trim().substring(4).trim();
                 } else {
@@ -77,23 +82,11 @@ public class CmdPlay implements CommandAction{
                     return;
                 }
             }
-            try {
-                conectChannel(event.getMember());
-            } catch (IllegalArgumentException e) {
-                throw new UnsupportedOperationException(BotConstants.NOT_IN_VOICE_CHANNEL.getConstants());
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
             executeCommand(music, user, event);
         } else{
             if (!cmd.replaceFirst("PLAY", "").trim().isEmpty()){
                 event.getChannel().sendMessage("Resuma a música pausada para adicionar mais músicas").queue();
                 return;
-            }
-            try {
-                conectChannel(event.getMember());
-            }catch (IllegalArgumentException e){
-                throw new UnsupportedOperationException(BotConstants.NOT_IN_VOICE_CHANNEL.getConstants());
             }
             executeCommand(event.getGuild());
             event.getChannel().sendMessage("**Música retomada :play_pause:**").queue();
@@ -104,10 +97,6 @@ public class CmdPlay implements CommandAction{
     }
     @Override
     public void executeCommand(String music, String user, MessageReceivedEvent event) {
-        if (MainPlayer.getITEM().getMusicManager(event.getGuild()).getPlayer().getPlayingTrack() == null
-        && MainPlayer.isPlaying().get(event.getGuild())){
-            MainPlayer.isPlaying().replace(event.getGuild(), false);
-        }
         TextChannel textCh = event.getTextChannel();
         MainPlayer.getITEM().loadPlay(textCh, music);
     }

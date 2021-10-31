@@ -16,7 +16,8 @@ public class CmdPrefix implements CommandAction{
 
     @Override
     public void verifyCommand(String cmd, String user, MessageReceivedEvent event) throws IllegalArgumentException {
-        String[] invalid = {"{", "}", "?", "#", "@", "*", ".", "$", ":", "|", "(", ")", "[", "]", "\\"};
+        String[] invalid = {"{", "}", "?", "#", "@", "*", ".", "$", ":", "|", "(", ")", "[", "]", "\\"
+        , "+", "^"};
         if (cmd.isEmpty() || cmd.matches("[A-Z]") || cmd.matches("[0-9]") || cmd.length() > 1 || Arrays.stream(invalid)
                 .anyMatch(s -> s.equals(cmd))){
             throw new IllegalArgumentException(BotConstants.INVALID_PREFIX.getConstants());

@@ -65,6 +65,7 @@ public class MainPlayer{
         seconds = (float) (min - Math.floor(min)) * 60;
         int minutes = (int) min;
         double hour = 0;
+        System.out.println("Minutos: " + minutes + "\nSegundos: " + Math.round(seconds));
         if (minutes >= 60){
             hour = (double) minutes/60;
             min = (hour - Math.floor(hour)) * 60;
@@ -75,7 +76,7 @@ public class MainPlayer{
             minutes++;
             seconds = 0;
         }
-        if (seconds < 10){
+        if (Math.round(seconds) < 10){
             current = String.format("%d:0%.0f", minutes, seconds);
         } else {
             current = String.format("%d:%.0f", minutes, seconds);
@@ -218,6 +219,28 @@ public class MainPlayer{
     public static void setLoop(Guild g) {
         if (MainPlayer.isLoop().get(g)) {
             MainPlayer.isLoop().replace(g, false);
+            if (!MainPlayer.getITEM().getMusicManager(g).getTrackQueue().getPlaylist().isEmpty()){
+                ArrayList<AudioTrack> reversed = new ArrayList<>(MainPlayer.getITEM().getMusicManager(g).getTrackQueue().getPlaylist());
+                ArrayList <AudioTrack> old = new ArrayList<>();
+                if (reversed.get(reversed.size() - 1).getInfo().title.equals(MainPlayer.getITEM().getMusicManager(g).getTrackQueue().getFirstInLoop().getInfo()
+                        .title)){
+                    old.add(reversed.get(reversed.size() - 1));
+                } else{
+                    for (int c=0;c< reversed.size();c++){
+                        if (reversed.get(c).getInfo().title.equals(MainPlayer.getITEM().getMusicManager(g).getTrackQueue().getFirstInLoop().getInfo().title)){
+                            for (int i=c;i<reversed.size();i++){
+                                old.add(reversed.get(i));
+                            }
+                            break;
+                        }
+                    }
+                }
+                for (AudioTrack t: old){
+                    reversed.remove(t);
+                }
+                MainPlayer.getITEM().getMusicManager(g).getTrackQueue().getPlaylist().clear();
+                MainPlayer.getITEM().getMusicManager(g).getTrackQueue().getPlaylist().addAll(reversed);
+            }
         } else {
             MainPlayer.isLoop().replace(g, true);
             if (MainPlayer.isPlaying().get(g)) {

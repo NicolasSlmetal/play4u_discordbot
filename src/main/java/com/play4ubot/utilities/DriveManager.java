@@ -24,7 +24,7 @@ import java.util.List;
 
 public class DriveManager {
     private String name;
-    private Path path = Paths.get(System.getProperty("user.dir"));
+    private Path path = Paths.get(System.getProperty("user.dir") + "/src/main/java/com/play4ubot/utilities");
     private JsonFactory json;
     private String tokens;
     private List<String> scopes;
@@ -36,7 +36,7 @@ public class DriveManager {
         this.name = "play4ubot";
         this.tokens = "credentials/token";
         this.json = JacksonFactory.getDefaultInstance();
-        this.credentials = System.getProperty("user.dir") + "/credentials/client_secret.json";
+        this.credentials = path +"/credentials/client_secret.json";
         this.scopes = Collections.singletonList(DriveScopes.DRIVE);
         this.setDriver();
         this.setDir();
@@ -48,7 +48,7 @@ public class DriveManager {
             if (file != null) {
                 GoogleClientSecrets secret = GoogleClientSecrets.load(this.getJson(), new InputStreamReader(file));
                 GoogleAuthorizationCodeFlow auth = new GoogleAuthorizationCodeFlow.Builder(http, this.getJson(), secret, scopes)
-                        .setDataStoreFactory(new FileDataStoreFactory(new File(path + "/" + (this.getTokens()))))
+                        .setDataStoreFactory(new FileDataStoreFactory(new File(path + "/" + this.getTokens())))
                         .setAccessType("offline")
                         .build();
                 LocalServerReceiver server = new LocalServerReceiver.Builder().setPort(8888).build();

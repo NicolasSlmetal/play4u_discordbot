@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import java.io.File;
@@ -72,5 +73,17 @@ public class EventReader extends ListenerAdapter {
                 "o pré-fixo padrão \"=\", digite:** prefix =**").queue();
         isWait_prefix().put(event.getGuild(), true);
         TrackQueue.getGuild().add(event.getGuild());
+    }
+
+    @Override
+    public void onGuildLeave(@NotNull GuildLeaveEvent event) {
+        MainPlayer.isPlaying().remove(event.getGuild());
+        MainPlayer.getName_music().remove(event.getGuild());
+        MainPlayer.isLoop().remove(event.getGuild());
+        MainPlayer.isPaused().remove(event.getGuild());
+        TrackQueue.getGuilds().remove(event.getGuild());
+        EventReader.isWait_prefix().remove(event.getGuild());
+        MessageReader.getPrefix().remove(event.getGuild());
+        MessageReader.isWait_answer().remove(event.getGuild());
     }
 }

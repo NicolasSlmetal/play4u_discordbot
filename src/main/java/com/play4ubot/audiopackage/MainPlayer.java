@@ -65,7 +65,6 @@ public class MainPlayer{
         seconds = (float) (min - Math.floor(min)) * 60;
         int minutes = (int) min;
         double hour = 0;
-        System.out.println("Minutos: " + minutes + "\nSegundos: " + Math.round(seconds));
         if (minutes >= 60){
             hour = (double) minutes/60;
             min = (hour - Math.floor(hour)) * 60;

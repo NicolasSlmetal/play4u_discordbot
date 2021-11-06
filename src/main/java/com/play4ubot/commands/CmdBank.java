@@ -26,6 +26,7 @@ public class CmdBank implements CommandAction{
 
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
+        event.getChannel().sendMessage("**Carregando o banco...**").queue();
         String description = "";
         String title;
         this.getMusics().clear();

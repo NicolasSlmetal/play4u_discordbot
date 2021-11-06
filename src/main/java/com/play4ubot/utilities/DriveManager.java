@@ -62,6 +62,7 @@ public class DriveManager {
         return null;
     }
     public void uploadFile(String name, String ext) throws IOException{
+        this.setDriver();
         java.io.File file = new File(System.getProperty("user.dir") + "/audiofiles/" + name);
         com.google.api.services.drive.model.File metaData = new com.google.api.services.drive.model.File();
         metaData.setParents(Collections.singletonList(this.getDir().getFiles().get(0).getId()));
@@ -71,6 +72,7 @@ public class DriveManager {
         com.google.api.services.drive.model.File fileUp = this.getDriver().files().create(metaData, content).execute();
     }
     public Path downloadFile(String name, String id) throws IOException{
+        this.setDriver();
         OutputStream downloader = new FileOutputStream(System.getProperty("user.dir") + "/audiofiles/" + name);
         this.getDriver().files().get(id).executeMediaAndDownloadTo(downloader);
         downloader.flush();
@@ -78,6 +80,7 @@ public class DriveManager {
         return Paths.get(System.getProperty("user.dir")  + "/audiofiles/" + name);
     }
     public boolean deleteFile(String id){
+        this.setDriver();
         try {
             this.getDriver().files().delete(id).execute();
             return true;
@@ -141,7 +144,9 @@ public class DriveManager {
     public void setDriver() {
         try {
             NetHttpTransport http = GoogleNetHttpTransport.newTrustedTransport();
-            this.driver = new Drive.Builder(http, this.getJson(), this.connect(http)).setApplicationName(this.getName()).build();
+            Credential cred = this.connect(http);
+            cred.refreshToken();
+            this.driver = new Drive.Builder(http, this.getJson(), cred).setApplicationName(this.getName()).build();
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
         }
@@ -151,6 +156,7 @@ public class DriveManager {
     }
 
     public void setDir() {
+        this.setDriver();
         try {
             this.dir = this.getDriver().files().list().setQ("name='audiofiles'").execute();
         }catch (IOException e){

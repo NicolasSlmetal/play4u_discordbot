@@ -62,7 +62,7 @@ public class FileManager {
         String replicant = name.replace("." + ext, "");
         replicant = replicant.trim();
         replicant = replicant.replace(ext.toUpperCase(), "");
-        replicant = replicant.replaceAll("[1-9][1-9][1-9][K-k]", "").trim();
+        replicant = replicant.replaceAll("[1-9][0-9][0-9][K-k]", "").trim();
         replicant = replicant.replaceAll("HQ", "");
         replicant = replicant.replaceAll("HD", "");
         replicant = replicant.replaceAll("Hd", "");
@@ -303,6 +303,7 @@ public class FileManager {
     }
 
     public void setMusics() {
+        this.getCloud().setDriver();
         try {
             List<com.google.api.services.drive.model.File> list = this.getCloud().getDriver().files().list().setQ("not name contains 'audiofiles'").setFields("nextPageToken, files(name)").execute().getFiles();
             for (com.google.api.services.drive.model.File f : list) {

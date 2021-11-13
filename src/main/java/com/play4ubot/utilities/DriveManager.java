@@ -214,19 +214,7 @@ public class DriveManager {
         } catch (IOException e) {
             e.printStackTrace();
             this.refresh();
-            try{
-                Thread.sleep(2000);
-            } catch (InterruptedException exp){
-                exp.printStackTrace();
-            } finally {
-                try {
-                    Files.delete(Path.of(path + "/" + getTokens() + "/StoredCredential"));
-                    new DriveManager();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                this.setDir();
+            this.setDir();
             }
         }
     }
-}

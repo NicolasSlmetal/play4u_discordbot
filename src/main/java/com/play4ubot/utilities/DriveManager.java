@@ -8,6 +8,7 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -20,6 +21,7 @@ import com.google.api.services.drive.model.FileList;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.http.HttpRequest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,7 +38,6 @@ public class DriveManager {
     private String credentials;
     private Drive driver;
     private FileList dir;
-    private Credential refresh;
 
     public DriveManager() {
         this.name = "play4ubot";
@@ -48,15 +49,6 @@ public class DriveManager {
         this.setDir();
     }
 
-    public String refresh() {
-        try {
-            this.getRefresh().refreshToken();
-            return this.getRefresh().getAccessToken();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public Credential connect(NetHttpTransport http) throws MalformedURLException {
         try {
@@ -77,27 +69,8 @@ public class DriveManager {
         }
         return null;
     }
-    public Credential connect(NetHttpTransport http, String newAcessToken) throws MalformedURLException {
-        try {
-            InputStream file = Paths.get(this.getCredentials()).toUri().toURL().openStream();
-            if (file != null) {
-                GoogleClientSecrets secret = GoogleClientSecrets.load(this.getJson(), new InputStreamReader(file));
-                GoogleAuthorizationCodeFlow auth = new GoogleAuthorizationCodeFlow.Builder(http, this.getJson(), secret, scopes)
-                        .setDataStoreFactory(new FileDataStoreFactory(new File(path + "/" + this.getTokens())))
-                        .setAccessType("offline")
-                        .build();
-                LocalServerReceiver server = new LocalServerReceiver.Builder().setPort(8888).build();
-                file.close();
-                return new AuthorizationCodeInstalledApp(auth, server).authorize("user").setAccessToken(newAcessToken);
-            }
-        } catch (Exception e) {
-            System.out.println("Arquivo inexistente");
-            return null;
-        }
-        return null;
-    }
 
-    public void uploadFile(String name, String ext) throws IOException, TokenResponseException {
+    public void uploadFile(String name, String ext) throws IOException{
         java.io.File file = new File(System.getProperty("user.dir") + "/audiofiles/" + name);
         com.google.api.services.drive.model.File metaData = new com.google.api.services.drive.model.File();
         metaData.setParents(Collections.singletonList(this.getDir().getFiles().get(0).getId()));
@@ -107,7 +80,7 @@ public class DriveManager {
         com.google.api.services.drive.model.File fileUp = this.getDriver().files().create(metaData, content).execute();
     }
 
-    public Path downloadFile(String name, String id) throws IOException, TokenResponseException {
+    public Path downloadFile(String name, String id) throws IOException {
         OutputStream downloader = new FileOutputStream(System.getProperty("user.dir") + "/audiofiles/" + name);
         this.getDriver().files().get(id).executeMediaAndDownloadTo(downloader);
         downloader.flush();
@@ -180,15 +153,10 @@ public class DriveManager {
         try {
             NetHttpTransport http = GoogleNetHttpTransport.newTrustedTransport();
             Credential cred = this.connect(http);
-            this.setRefresh(cred.setRefreshToken(cred.getAccessToken()));
+            System.out.println(cred.refreshToken());
             this.driver = new Drive.Builder(http, this.getJson(), cred).setApplicationName(this.getName()).build();
         } catch (GeneralSecurityException | IOException e) {
-            try {
-                Credential cred = this.connect(GoogleNetHttpTransport.newTrustedTransport(), this.refresh());
-                setDriver();
-            } catch (IOException | GeneralSecurityException ex) {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         }
     }
 
@@ -200,21 +168,11 @@ public class DriveManager {
         this.dir = dir;
     }
 
-    public Credential getRefresh() {
-        return refresh;
-    }
-
-    public void setRefresh(Credential refresh) {
-        this.refresh = refresh;
-    }
-
     public void setDir() {
         try {
             this.dir = this.getDriver().files().list().setQ("name='audiofiles'").execute();
         } catch (IOException e) {
             e.printStackTrace();
-            this.refresh();
-            this.setDir();
             }
         }
     }

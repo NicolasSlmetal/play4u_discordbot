@@ -147,7 +147,6 @@ public class DriveManager {
         try {
             NetHttpTransport http = GoogleNetHttpTransport.newTrustedTransport();
             Credential cred = this.connect(http);
-            System.out.println(cred.refreshToken());
             this.driver = new Drive.Builder(http, this.getJson(), cred).setApplicationName(this.getName()).build();
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();

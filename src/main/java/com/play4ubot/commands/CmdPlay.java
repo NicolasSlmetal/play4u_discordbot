@@ -65,8 +65,8 @@ public class CmdPlay implements CommandAction{
                         }
                         MainPlayer.getName_music().replace(event.getGuild(), music);
                     }else{
-                        event.getChannel().sendMessage("**Procurando no YouTube** :mag_right:").queue();
-                        music = "ytsearch:" + cmd.replaceFirst("PLAY", "");
+                        event.getChannel().sendMessage(user + ", Não encontrei a música :cry:").queue();
+                        return;
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -74,7 +74,7 @@ public class CmdPlay implements CommandAction{
                     throw new UnsupportedOperationException(BotConstants.NOT_IN_VOICE_CHANNEL.getConstants());
                 }
             } else{
-                if (music.contains("BANDCAMP") || music.contains("VIMEO") || music.contains("YOUTU.BE") ) {
+                if (music.contains("BANDCAMP") || music.contains("VIMEO")) {
                     music = event.getMessage().getContentRaw().replaceFirst(MessageReader.getPrefix().get(event.getGuild()),
                             "").trim().substring(4).trim();
                 } else {

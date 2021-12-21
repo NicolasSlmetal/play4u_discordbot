@@ -48,7 +48,7 @@ public class CmdBank implements CommandAction{
                 description.append((c + 1) +"º -"+ musics.get(c) + "\n");
             }
         }
-        if (!description.isEmpty()){
+        if (!description.toString().isEmpty()){
             event.getChannel().sendMessageEmbeds(new EmbedBuilder()
                     .setThumbnail(event.getJDA().getSelfUser().getAvatarUrl())
                     .setAuthor(event.getJDA().getSelfUser().getName())

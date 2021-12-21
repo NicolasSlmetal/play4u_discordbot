@@ -10,14 +10,14 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
+
 import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
-import java.util.stream.Collectors;
 
 public class MainPlayer{
     private static MainPlayer ITEM;
@@ -37,7 +37,7 @@ public class MainPlayer{
         String name;
         if (Files.exists(Paths.get(url))) {
             name = url.split("audiofiles")[url.split("audiofiles").length - 1];
-            name = name.substring(1);
+            name = name.substring(1, name.length() - 4);
         } else {
             name = url;
         }
@@ -50,7 +50,7 @@ public class MainPlayer{
         String name;
         if (Files.exists(Paths.get(url))) {
             name = url.split("audiofiles")[url.split("audiofiles").length - 1];
-            name = name.substring(1);
+            name = name.substring(1, name.length() - 4);
         } else {
             name = url;
         }
@@ -125,7 +125,11 @@ public class MainPlayer{
                 main.getTrackQueue().queuePlaylist(track);
                 EmbedBuilder embed;
                 if (!track.getInfo().title.equalsIgnoreCase("Unknown Title")) {
-                    MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().title);
+                    if (!Files.isReadable(Paths.get(track.getInfo().uri))) {
+                        MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().title);
+                    } else {
+                        MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().uri);
+                    }
                 }
                 if (!MainPlayer.isPlaying().get(textCh.getGuild())) {
                     MainPlayer.isPlaying().put(textCh.getGuild(), true);
@@ -145,7 +149,7 @@ public class MainPlayer{
                                     .get(textCh.getGuild()), title, sendDuration(track.getDuration()),
                             timeToNext);
                 }
-                textCh.sendMessageEmbeds(embed.setAuthor(textCh.getJDA().getSelfUser().getName())
+               textCh.sendMessageEmbeds(embed.setAuthor(textCh.getJDA().getSelfUser().getName())
                         .setThumbnail(textCh.getJDA().getSelfUser().getAvatarUrl()).build()).queue();
                 if (!old.isEmpty()){
                     for (AudioTrack t: old){

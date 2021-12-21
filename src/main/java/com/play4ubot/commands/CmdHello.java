@@ -4,8 +4,11 @@ import com.play4ubot.listeners.MessageReader;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.awt.*;
+import java.text.DateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class CmdHello implements CommandAction {
     @Override
@@ -19,7 +22,10 @@ public class CmdHello implements CommandAction {
     }
 
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
-        int hour = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).getHour();
+        Locale locale = event.getGuild().getLocale();
+        DateFormat date = DateFormat.getDateInstance(DateFormat.FULL, locale);
+        int hour = date.getCalendar().get(Calendar.HOUR_OF_DAY);
+        System.out.println(hour);
         String hello;
         if (hour < 12 && hour > 5) {
             hello = "Bom dia";

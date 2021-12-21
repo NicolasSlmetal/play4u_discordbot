@@ -23,6 +23,7 @@ public class CmdHello implements CommandAction {
 
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
         Locale locale = event.getGuild().getLocale();
+        System.out.println(locale);
         DateFormat date = DateFormat.getDateInstance(DateFormat.FULL, locale);
         int hour = date.getCalendar().get(Calendar.HOUR_OF_DAY);
         System.out.println(hour);

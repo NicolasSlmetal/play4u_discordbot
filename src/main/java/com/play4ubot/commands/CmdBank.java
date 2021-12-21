@@ -27,7 +27,7 @@ public class CmdBank implements CommandAction{
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
         event.getChannel().sendMessage("**Carregando o banco...**").queue();
-        String description = "";
+        StringBuffer description = new StringBuffer();
         String title;
         this.getMusics().clear();
         this.setMusics();
@@ -35,7 +35,7 @@ public class CmdBank implements CommandAction{
             title = "Todas as músicas do banco";
             List<String> sorted_musics = this.getMusics().stream().sorted().collect(Collectors.toCollection(ArrayList::new));
             for (int c = 0;c< sorted_musics.size();c++){
-                description += (c + 1) +"º -" + sorted_musics.get(c) + "\n";
+                description.append((c + 1) +"º -" + sorted_musics.get(c) + "\n");
             }
         } else{
             title = String.format("Todas as músicas com \"%s\"", cmd.toUpperCase());
@@ -45,7 +45,7 @@ public class CmdBank implements CommandAction{
                 musics = stream.collect(Collectors.toCollection(ArrayList::new));
             }
             for (int c =0; c< musics.size();c++){
-                description += (c + 1) +"º -"+ musics.get(c) + "\n";
+                description.append((c + 1) +"º -"+ musics.get(c) + "\n");
             }
         }
         if (!description.isEmpty()){

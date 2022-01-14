@@ -10,7 +10,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.awt.*;
 import java.nio.file.Files;
@@ -84,7 +83,7 @@ public class MainPlayer{
         return  current;
     }
     public MainAudioManager getMusicManager(Guild g){
-        return this.musicMapManagers.computeIfAbsent(g.getIdLong(), (guildID) -> {
+        return this.musicMapManagers.computeIfAbsent(g.getIdLong(), guildID -> {
         final MainAudioManager guildManager = new MainAudioManager(this.manager);
         g.getAudioManager().setSendingHandler(guildManager.getAudioSend());
         return guildManager;
@@ -251,6 +250,30 @@ public class MainPlayer{
                 MainPlayer.getITEM().getMusicManager(g).getTrackQueue().getPlaylist().add(track);
                 MainPlayer.getITEM().getMusicManager(g).getTrackQueue().setFirstInLoop(track);
             }
+        }
+    }
+    public void skip(Guild g, TextChannel channel){
+        ArrayList<String> names = new ArrayList<>();
+        names.add(MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().title);
+        MainPlayer.getITEM().getMusicManager(g).getTrackQueue().nextTrack();
+        try{
+            names.add(MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().title);
+        }catch (NullPointerException e){
+            names.add("null");
+            MainPlayer.isPlaying().put(g, false);
+            MainPlayer.isPaused().put(g, false);
+        }
+        channel.sendMessage("Música **" + names.get(0) + "** pulada...").queue();
+        if (!names.get(1).equals("null")){
+            AudioTrack track = MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack();
+            EmbedBuilder embed = new EmbedBuilder().setColor(new Color(0xFF0707))
+                    .setAuthor(g.getJDA().getSelfUser().getName())
+                    .setTitle("Tocando ")
+                    .setDescription(names.get(1) + "\nDuração: " + MainPlayer.getITEM().sendDuration(track.getDuration()))
+                    .setThumbnail(g.getJDA().getSelfUser().getAvatarUrl());
+            channel.sendMessageEmbeds(embed.build()).queue();
+        }else{
+            channel.sendMessage("Sem músicas para reproduzir").queue();
         }
     }
     public HashMap<Long, MainAudioManager> getMusicMapManagers() {

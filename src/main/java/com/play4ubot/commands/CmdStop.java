@@ -3,12 +3,18 @@ package com.play4ubot.commands;
 import com.play4ubot.audiopackage.MainPlayer;
 import com.play4ubot.listeners.MessageReader;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.play4ubot.utilities.BotConstants;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CmdStop implements CommandAction{
+public class CmdStop extends CommandLimiter implements CommandAction{
+    public CmdStop(){
+        super("STOP");
+    }
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
         cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) + "STOP", "");
@@ -37,11 +43,31 @@ public class CmdStop implements CommandAction{
     }
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
-        MainPlayer.getITEM().getMusicManager(event.getGuild()).getPlayer().stopTrack();
-        MainPlayer.getITEM().getMusicManager(event.getGuild()).getTrackQueue().getPlaylist().clear();
-        MainPlayer.isPaused().replace(event.getGuild(), false);
-        MainPlayer.isPlaying().replace(event.getGuild(), false);
-        event.getChannel().sendMessage("**Reprodução interrompida** :stop_button: ").queue();
+        Runnable r = () -> {
+            MainPlayer.getITEM().getMusicManager(event.getGuild()).getPlayer().stopTrack();
+            MainPlayer.getITEM().getMusicManager(event.getGuild()).getTrackQueue().getPlaylist().clear();
+            MainPlayer.isPaused().replace(event.getGuild(), false);
+            MainPlayer.isPlaying().replace(event.getGuild(), false);
+            event.getChannel().sendMessage("**Reprodução interrompida** :stop_button: ").queue();
+        };
+        List<Member> members = new ArrayList<>(event.getMember().getVoiceState().getChannel().getMembers());
+        members.removeIf(member -> member.getUser().isBot());
+        List<Member> copy = new ArrayList<>(members);
+        copy.remove(event.getMember());
+        if (!copy.isEmpty()){
+            if (this.getMutableList().isEmpty()){
+                this.verifyLimit(members, event.getMember(), event.getMember().getVoiceState().getChannel(), event.getTextChannel(), r);
+            } else if (this.getMutableList().contains(event.getMember())){
+                this.setMember(event.getMember());
+                synchronized (this.getMutableList()){
+                    this.getMutableList().notify();
+                }
+            } else if (this.getSendeds().contains(event.getMember())) {
+                event.getChannel().sendMessage(user + ", Você já enviou o comando :rage:").queue();
+            }
+        } else {
+            r.run();
+        }
     }
 
     @Override

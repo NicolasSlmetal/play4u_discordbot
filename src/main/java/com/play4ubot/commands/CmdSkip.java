@@ -2,15 +2,19 @@ package com.play4ubot.commands;
 
 import com.play4ubot.audiopackage.MainPlayer;
 import com.play4ubot.listeners.MessageReader;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.play4ubot.utilities.BotConstants;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
-public class CmdSkip implements CommandAction{
+public class CmdSkip extends CommandLimiter implements CommandAction{
+    public CmdSkip(){
+        super("SKIP");
+    }
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
         cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) + "SKIP", "");
@@ -40,29 +44,28 @@ public class CmdSkip implements CommandAction{
 
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
-        ArrayList<String> names = new ArrayList<>();
-        names.add(MainPlayer.getITEM().getMusicManager(event.getGuild()).getPlayer().getPlayingTrack().getInfo().title);
-        MainPlayer.getITEM().getMusicManager(event.getGuild()).getTrackQueue().nextTrack();
-        try{
-            names.add(MainPlayer.getITEM().getMusicManager(event.getGuild()).getPlayer().getPlayingTrack().getInfo().title);
-        }catch (NullPointerException e){
-            names.add("null");
-            MainPlayer.isPlaying().put(event.getGuild(), false);
-            MainPlayer.isPaused().put(event.getGuild(), false);
-        }
-        event.getChannel().sendMessage("Música **" + names.get(0) + "** pulada...").queue();
-        if (!names.get(1).equals("null")){
-            AudioTrack track = MainPlayer.getITEM().getMusicManager(event.getGuild()).getPlayer().getPlayingTrack();
-            EmbedBuilder embed = new EmbedBuilder().setColor(new Color(0xFF0707))
-                    .setAuthor(event.getJDA().getSelfUser().getName())
-                    .setTitle("Tocando ")
-                    .setDescription(names.get(1) + "\nDuração: " + MainPlayer.getITEM().sendDuration(track.getDuration()))
-                    .setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
-            event.getChannel().sendMessageEmbeds(embed.build()).queue();
-        }else{
-            event.getChannel().sendMessage("Sem músicas para reproduzir").queue();
+        Runnable r = () -> MainPlayer.getITEM().skip(event.getGuild(), event.getTextChannel());
+        final List<Member> members = new ArrayList<>(event.getMember().getVoiceState().getChannel().getMembers());
+        members.removeIf(member -> member.getUser().isBot());
+        List<Member> copy = new ArrayList<>(members);
+        copy.remove(event.getMember());
+        if (!copy.isEmpty()) {
+            if (this.getMutableList().isEmpty()) {
+                this.verifyLimit(members, event.getMember(), event.getMember().getVoiceState().getChannel(), event.getTextChannel(), r);
+            } else if (this.getMutableList().contains(event.getMember())){
+                this.setMember(event.getMember());
+                synchronized (getMutableList()) {
+                    this.getMutableList().notify();
+                }
+            } else if (this.getSendeds().contains(event.getMember())) {
+                event.getChannel().sendMessage(user + ", Você já enviou o comando :rage:").queue();
+            }
+        } else {
+            r.run();
         }
     }
+
+
 
     @Override
     public EmbedBuilder getHelp(String cmd, MessageReceivedEvent event) {

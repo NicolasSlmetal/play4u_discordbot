@@ -2,11 +2,19 @@ package com.play4ubot.commands;
 
 import com.play4ubot.listeners.MessageReader;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import com.play4ubot.utilities.BotConstants;
-import java.awt.*;
+import net.dv8tion.jda.api.managers.AudioManager;
 
-public class CmdExit implements CommandAction{
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CmdExit extends CommandLimiter implements CommandAction{
+    public CmdExit(){
+        super("SAIR");
+    }
     @Override
     public void getCommand(String cmd, String user, MessageReceivedEvent event) {
         cmd = cmd.replaceFirst(MessageReader.getPrefix().get(event.getGuild()) + "SAIR", "");
@@ -24,7 +32,26 @@ public class CmdExit implements CommandAction{
 
     @Override
     public void executeCommand(String cmd, String user, MessageReceivedEvent event) {
-        event.getGuild().getAudioManager().closeAudioConnection();
+        AudioManager manager = event.getGuild().getAudioManager();
+        Runnable r = manager::closeAudioConnection;
+        List<Member> members = new ArrayList<>(event.getMember().getVoiceState().getChannel().getMembers());
+        members.removeIf(member -> member.getUser().isBot());
+        List<Member> copy = new ArrayList<>(members);
+        copy.remove(event.getMember());
+        if (!copy.isEmpty()){
+            if (this.getMutableList().isEmpty()){
+                this.verifyLimit(members, event.getMember(), event.getMember().getVoiceState().getChannel(), event.getTextChannel(), r);
+            } else if (this.getMutableList().contains(event.getMember())){
+                this.setMember(event.getMember());
+                synchronized (this.getMutableList()){
+                    this.getMutableList().notify();
+                }
+            } else if (this.getSendeds().contains(event.getMember())) {
+                event.getChannel().sendMessage(user + ",Você já enviou o comando :rage:").queue();
+            }
+        }else{
+            r.run();
+        }
     }
 
     @Override

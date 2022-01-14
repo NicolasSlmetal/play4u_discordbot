@@ -30,7 +30,7 @@ public abstract class CommandLimiter  {
         mutableList.addAll(membersConnected);
         mutableList.remove(member);
         String user = voiceCh.getJDA().getSelfUser().getName();
-        List<? extends Member> copy = new ArrayList<>(List.copyOf(membersConnected.stream().filter((member1 -> !member1.getUser().getName().equals(user))).collect(Collectors.toList())));
+        List<? extends Member> copy = new ArrayList<>(membersConnected);
         textCh.sendMessage(String.format(
                 "**(%d/%d) enviaram o comando %s**", copy.size() - mutableList.size(), copy.size(), this.getName())
         ).queue();

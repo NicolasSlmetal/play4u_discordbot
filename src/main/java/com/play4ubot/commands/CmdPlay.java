@@ -68,7 +68,7 @@ public class CmdPlay implements CommandAction{
                         }
                         MainPlayer.getName_music().replace(event.getGuild(), music);
                     }else{
-                        event.getChannel().sendMessage("Procurando no Youtube :mag_right:").queue();
+                        event.getChannel().sendMessage("**Procurando no Youtube** :mag_right:").queue();
                         music = "ytsearch:" + cmd.trim().replaceFirst("PLAY", "").trim();
                     }
                 } catch (NullPointerException e) {

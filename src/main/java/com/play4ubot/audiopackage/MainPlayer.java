@@ -1,5 +1,6 @@
 package com.play4ubot.audiopackage;
 
+import com.play4ubot.utilities.URLFinder;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -26,6 +27,7 @@ public class MainPlayer{
     private static HashMap<Guild, Boolean> loop = new HashMap<>();
     private final HashMap<Long, MainAudioManager> musicMapManagers;
     private final AudioPlayerManager manager;
+    private final URLFinder url = new URLFinder();
     public MainPlayer(){
         this.musicMapManagers = new HashMap<>();
         this.manager = new DefaultAudioPlayerManager();
@@ -122,7 +124,11 @@ public class MainPlayer{
                 MainPlayer.setPaused(false, textCh.getGuild());
                 String title = MainPlayer.isPlaying().get(textCh.getGuild()) ? "Adicionado na fila" : "Tocando";
                 main.getTrackQueue().queuePlaylist(track);
-                MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().uri);
+                if (url.isUrl(track.getInfo().uri)) {
+                    MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().title);
+                }else if (Files.isReadable(Paths.get(track.getInfo().uri))){
+                    MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().uri);
+                }
                 EmbedBuilder embed;
                 if (!MainPlayer.isPlaying().get(textCh.getGuild())) {
                     MainPlayer.isPlaying().replace(textCh.getGuild(), true);
@@ -252,10 +258,20 @@ public class MainPlayer{
     }
     public void skip(Guild g, TextChannel channel){
         ArrayList<String> names = new ArrayList<>();
-        names.add(MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().title);
+        if (!MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().title.equalsIgnoreCase("Unknown title"))
+            names.add(MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().title);
+        else if (Files.isReadable(Paths.get(MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().uri))){
+           String correctName =  MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().uri;
+           names.add(correctName.split("audiofiles")[correctName.split("audiofiles").length - 1].substring(1));
+        }
         MainPlayer.getITEM().getMusicManager(g).getTrackQueue().nextTrack();
         try{
-            names.add(MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().title);
+            if (!MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().title.equalsIgnoreCase("Unknown title"))
+                names.add(MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().title);
+            else if (Files.isReadable(Paths.get(MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().uri))){
+                String correctName =  MainPlayer.getITEM().getMusicManager(g).getPlayer().getPlayingTrack().getInfo().uri;
+                names.add(correctName.split("audiofiles")[correctName.split("audiofiles").length - 1].substring(1));
+            }
         }catch (NullPointerException e){
             names.add("null");
             MainPlayer.isPlaying().put(g, false);

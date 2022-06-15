@@ -2,7 +2,6 @@ package com.play4ubot.listeners;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
 
 import com.play4ubot.commands.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -31,9 +30,8 @@ public class CommandChecker {
         for (String key : this.getCmdMap().keySet()){
             if (splitMsg[0].replaceFirst(MessageReader.getPrefix().get(event.getGuild()), "").trim().equals(key)){
                 try{
-                    CompletableFuture<Void> commandGetter = CompletableFuture.runAsync(() ->
-                        this.getCmdMap().get(key).getCommand(name.substring(0, 1).trim() + name.substring(1), user, event));
-                    commandGetter.join();
+                    this.getCmdMap().get(key).getCommand(name.substring(0, 1).trim() + name.substring(1), user, event);
+
                 } catch (IllegalArgumentException illegal){
                     event.getChannel().sendMessage(user + "**,Comando inválido:no_entry_sign: **." + illegal.getMessage()
                     ).queue();

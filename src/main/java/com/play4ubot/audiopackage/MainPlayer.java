@@ -122,9 +122,10 @@ public class MainPlayer{
                 MainPlayer.setPaused(false, textCh.getGuild());
                 String title = MainPlayer.isPlaying().get(textCh.getGuild()) ? "Adicionado na fila" : "Tocando";
                 main.getTrackQueue().queuePlaylist(track);
+                MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().uri);
                 EmbedBuilder embed;
                 if (!MainPlayer.isPlaying().get(textCh.getGuild())) {
-                    MainPlayer.isPlaying().put(textCh.getGuild(), true);
+                    MainPlayer.isPlaying().replace(textCh.getGuild(), true);
                     embed = setMusicEmbed(MainPlayer.getName_music().get(textCh.getGuild()),
                             title, sendDuration(track.getDuration()));
                 }else {

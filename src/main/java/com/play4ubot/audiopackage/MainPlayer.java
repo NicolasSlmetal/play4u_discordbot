@@ -123,18 +123,11 @@ public class MainPlayer{
                 String title = MainPlayer.isPlaying().get(textCh.getGuild()) ? "Adicionado na fila" : "Tocando";
                 main.getTrackQueue().queuePlaylist(track);
                 EmbedBuilder embed;
-                if (!track.getInfo().title.equalsIgnoreCase("Unknown Title")) {
-                    if (!Files.isReadable(Paths.get(track.getInfo().uri))) {
-                        MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().title);
-                    } else {
-                        MainPlayer.getName_music().replace(textCh.getGuild(), track.getInfo().uri);
-                    }
-                }
                 if (!MainPlayer.isPlaying().get(textCh.getGuild())) {
                     MainPlayer.isPlaying().put(textCh.getGuild(), true);
                     embed = setMusicEmbed(MainPlayer.getName_music().get(textCh.getGuild()),
                             title, sendDuration(track.getDuration()));
-                } else {
+                }else {
                     long timeActual = main.getPlayer().getPlayingTrack().getPosition();
                     long timeToEnd = main.getPlayer().getPlayingTrack().getDuration();
                     long totalTime = timeToEnd - timeActual;
@@ -159,7 +152,11 @@ public class MainPlayer{
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                trackLoaded(playlist.getTracks().get(0));
+                if (!playlist.getTracks().isEmpty()) {
+                    trackLoaded(playlist.getTracks().get(0));
+                } else {
+                    textCh.sendMessage("Não encontrei a música :cry:").queue();
+                }
             }
 
             @Override

@@ -68,8 +68,8 @@ public class CmdPlay implements CommandAction{
                         }
                         MainPlayer.getName_music().replace(event.getGuild(), music);
                     }else{
-                        event.getChannel().sendMessage(user + ", Não encontrei a música :cry:").queue();
-                        return;
+                        event.getChannel().sendMessage("Procurando no Youtube :mag_right:").queue();
+                        music = "ytsearch:" + cmd.trim().replaceFirst("PLAY", "").trim();
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -77,11 +77,11 @@ public class CmdPlay implements CommandAction{
                     throw new UnsupportedOperationException(BotConstants.NOT_IN_VOICE_CHANNEL.getConstants());
                 }
             } else{
-                if (music.contains("BANDCAMP") || music.contains("VIMEO")) {
+                if (music.contains("BANDCAMP") || music.contains("VIMEO") || music.contains("YOUTUBE") || music.contains("YOUTU.BE")) {
                     music = event.getMessage().getContentRaw().replaceFirst(MessageReader.getPrefix().get(event.getGuild()),
                             "").trim().substring(4).trim();
                 } else {
-                    event.getChannel().sendMessage(user + ", use URLs do Vimeo ou Bandcamp").queue();
+                    event.getChannel().sendMessage(user + ", use URLs do Youtube, Vimeo ou Bandcamp").queue();
                     return;
                 }
             }

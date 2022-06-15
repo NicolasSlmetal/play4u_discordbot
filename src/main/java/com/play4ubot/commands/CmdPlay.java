@@ -11,6 +11,7 @@ import com.play4ubot.utilities.FileManager;
 import com.play4ubot.utilities.URLFinder;
 import java.awt.*;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 public class CmdPlay implements CommandAction{
     private FileManager manager;
@@ -54,12 +55,14 @@ public class CmdPlay implements CommandAction{
             } else if (!finder.isUrl(music)) {
                 try {
                     event.getChannel().sendMessage("**Procurando no banco** :mag_right:").queue();
-                    music = this.manager.searchFile(this.manager.removeSymbols(music));
+                    CompletableFuture<String> searchFuture = CompletableFuture.completedFuture(this.getManager().searchFile(this.getManager().removeSymbols(music)));
+                    music = searchFuture.join();
                     if (music != null) {
                         String query = String.format("name='%s'", music);
                         try {
-                            music = this.getManager().getCloud().downloadFile(music, this.manager.getCloud().getDriver().files().list().setQ(query).setFields("" +
-                                    "nextPageToken, files(id)").execute().getFiles().get(0).getId()).toString();
+                            CompletableFuture<String> download = CompletableFuture.completedFuture(this.getManager().getCloud().downloadFile(music, this.manager.getCloud().getDriver().files().list().setQ(query).setFields("" +
+                                    "nextPageToken, files(id)").execute().getFiles().get(0).getId()).join().toString());
+                            music = download.join();
                         }catch (IOException e){
                             e.printStackTrace();
                         }

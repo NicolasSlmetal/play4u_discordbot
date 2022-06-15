@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class DriveManager {
     private String name;
@@ -74,12 +75,12 @@ public class DriveManager {
         com.google.api.services.drive.model.File fileUp = this.getDriver().files().create(metaData, content).execute();
     }
 
-    public Path downloadFile(String name, String id) throws IOException {
+    public CompletableFuture<Path> downloadFile(String name, String id) throws IOException {
         OutputStream downloader = new FileOutputStream(System.getProperty("user.dir") + "/audiofiles/" + name);
         this.getDriver().files().get(id).executeMediaAndDownloadTo(downloader);
         downloader.flush();
         downloader.close();
-        return Paths.get(System.getProperty("user.dir") + "/audiofiles/" + name);
+        return CompletableFuture.completedFuture(Paths.get(System.getProperty("user.dir") + "/audiofiles/" + name));
     }
 
     public boolean deleteFile(String id) {

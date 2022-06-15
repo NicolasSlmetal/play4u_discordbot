@@ -9,6 +9,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -227,22 +228,22 @@ public class FileManager {
     public String searchFile(String name) {
         this.setMusics();
         final String file_name = name;
-        Stream<String> stream = this.getMusics().stream().filter(m -> m.replaceAll("-", " ").toUpperCase().contains(file_name));
-        List<String> searchs = stream.collect(Collectors.toCollection(ArrayList::new));
+        CompletableFuture<List<String>> futureList = CompletableFuture.completedFuture(this.getMusics().stream().filter(m -> m.replaceAll("-", " ").toUpperCase().contains(file_name))).thenApply
+                (stream -> stream.collect(Collectors.toCollection(ArrayList::new)));
+        List<String> searchs = futureList.join();
        if (searchs.isEmpty()){
            final String[] split = name.split(" ");
            int c = 0;
            while (searchs.isEmpty() && c < split.length){
                final int e = c;
-               stream = this.getMusics().stream().filter(m -> m.toUpperCase().contains(split[e]));
-               searchs = stream.collect(Collectors.toCollection(ArrayList::new));
+               futureList = CompletableFuture.completedFuture(this.getMusics().stream().filter(m -> m.toUpperCase().contains(split[e]))).thenApply(stream -> stream.collect(Collectors.toCollection(ArrayList::new)));
+               searchs = futureList.join();
                c++;
            }
            for (c = 0;c < split.length;c++){
                final int e = c;
-               stream = searchs.stream().filter(m ->
-                       m.toUpperCase().contains(split[e]));
-               searchs = stream.collect(Collectors.toCollection(ArrayList::new));
+               futureList = CompletableFuture.completedFuture(searchs.stream().filter(m -> m.equalsIgnoreCase(split[e].toUpperCase()))).thenApply(stream -> stream.collect(Collectors.toCollection(ArrayList::new)));
+               searchs = futureList.join();
            }
        }
        if (searchs.isEmpty()){

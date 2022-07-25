@@ -36,21 +36,25 @@ public class CmdExit extends CommandLimiter implements CommandAction{
         Runnable r = manager::closeAudioConnection;
         List<Member> members = new ArrayList<>(event.getMember().getVoiceState().getChannel().getMembers());
         members.removeIf(member -> member.getUser().isBot());
-        List<Member> copy = new ArrayList<>(members);
-        copy.remove(event.getMember());
-        if (!copy.isEmpty()){
-            if (this.getMutableList().isEmpty()){
-                this.verifyLimit(members, event.getMember(), event.getMember().getVoiceState().getChannel(), event.getTextChannel(), r);
-            } else if (this.getMutableList().contains(event.getMember())){
-                this.setMember(event.getMember());
-                synchronized (this.getMutableList()){
-                    this.getMutableList().notify();
-                }
-            } else if (this.getSendeds().contains(event.getMember())) {
-                event.getChannel().sendMessage(user + ",Você já enviou o comando :rage:").queue();
-            }
-        }else{
+        if (members.isEmpty()){
             r.run();
+        }else {
+            List<Member> copy = new ArrayList<>(members);
+            copy.remove(event.getMember());
+            if (!copy.isEmpty()) {
+                if (this.getMutableList().isEmpty()) {
+                    this.verifyLimit(members, event.getMember(), event.getMember().getVoiceState().getChannel(), event.getTextChannel(), r);
+                } else if (this.getMutableList().contains(event.getMember())) {
+                    this.setMember(event.getMember());
+                    synchronized (this.getMutableList()) {
+                        this.getMutableList().notify();
+                    }
+                } else if (this.getSendeds().contains(event.getMember())) {
+                    event.getChannel().sendMessage(user + ",Você já enviou o comando :rage:").queue();
+                }
+            } else {
+                r.run();
+            }
         }
     }
 
